@@ -13,6 +13,7 @@ public class Enemy extends GameObject {
     private double damage;
     private int direction; // Track the direction of movement
     private double distanceMoved; // Track the distance moved
+    private int randomSpeed;
     Random random = new Random();
 
     public Enemy(double x, double y) {
@@ -23,7 +24,8 @@ public class Enemy extends GameObject {
         horizontalMoveSpeed = Integer.parseInt(game_props.getProperty("gameObjects.enemy.speed"));
         damage = Double.parseDouble(game_props.getProperty("gameObjects.enemy.damageSize"));
         distanceMoved = 0;
-        direction = random.nextBoolean() ? 1 : -1;
+        randomSpeed = Integer.parseInt(game_props.getProperty("gameObjects.flyingPlatform.randomSpeed"));
+        direction = random.nextBoolean() ? randomSpeed : -randomSpeed;
     }
 
     @Override
@@ -48,6 +50,7 @@ public class Enemy extends GameObject {
     public void setDamage(double damage) {
         this.damage = damage;
     }
+
 
     public void update(Input input) {
         // Random movement behavior

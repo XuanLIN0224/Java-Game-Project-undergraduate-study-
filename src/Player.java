@@ -20,6 +20,7 @@ public class Player extends GameObject {
     private boolean isFalling;
     private boolean isDead;
     private double verticalSpeed;
+    private boolean isOnFlyingPlatform;
     public Player(double x, double y) {
         super(x, y);
         radius = Double.parseDouble(game_props.getProperty("gameObjects.player.radius"));
@@ -33,6 +34,7 @@ public class Player extends GameObject {
         onGround = true;
         isDead = false;
         isJumping = false;
+        isOnFlyingPlatform = false;
     }
 
     public double getX_boundary() {
@@ -51,12 +53,23 @@ public class Player extends GameObject {
         isDead = true;
     }
 
+    public boolean isOnFlyingPlatform() {
+        return isOnFlyingPlatform;
+    }
+
+    public void setOnFlyingPlatform(boolean onFlyingPlatform) {
+        isOnFlyingPlatform = onFlyingPlatform;
+    }
 
     @Override
     public void resetObject() {
         super.resetObject();
         verticalSpeed= 0;
         isDead = false;
+    }
+
+    public void setJumping(boolean jumping) {
+        isJumping = jumping;
     }
 
     public void update(Input input) {
@@ -71,6 +84,11 @@ public class Player extends GameObject {
             onGround = false;
             verticalSpeed = -20;
         }
+        if (!isJumping && input.isDown(Keys.UP) && isOnFlyingPlatform && !isDead) {
+            isJumping = true;
+            isOnFlyingPlatform = false;
+            verticalSpeed = -20;
+        }
 
         if (isJumping) {
             y += verticalSpeed;
@@ -82,6 +100,8 @@ public class Player extends GameObject {
                 onGround = true;
                 isJumping = false;
             }
+
+
         }
         if (isDead){
             y += 2;

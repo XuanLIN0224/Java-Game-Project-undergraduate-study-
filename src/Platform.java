@@ -9,7 +9,6 @@ public class Platform extends GameObject {
     String imageName;
     final private Image platform;
     private int horizontalMoveSpeed;
-
     public Platform(double x, double y) {
         super(x, y);
         horizontalMoveSpeed = Integer.parseInt(game_props.getProperty("gameObjects.platform.speed"));

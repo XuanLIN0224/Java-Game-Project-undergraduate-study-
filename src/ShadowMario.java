@@ -18,13 +18,16 @@ public class ShadowMario extends AbstractGame {
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
     int windowHeight = Integer.parseInt(game_props.getProperty("windowHeight"));
     ArrayList <Coin> coins = new ArrayList<Coin>();
-    int countCoins = 0;
     ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-    int countEnemies = 0;
+    ArrayList<FlyingPlatform> flyingPlatforms = new ArrayList<FlyingPlatform>();
+    ArrayList<DoubleScorePower> doubleScorePowers = new ArrayList<DoubleScorePower>();
+    ArrayList<InvinciblePower> invinciblePowers = new ArrayList<InvinciblePower>();
     private final Image BACKGROUND_IMAGE;
     private Player player;
     private EndFlag endFlag;
     private Platform platform;
+    private EnemyBoss enemyBoss;
+    private Fireball fireball;
     private Score score = new Score();
     private Health health = new Health();
     private Win win = new Win();
@@ -34,6 +37,7 @@ public class ShadowMario extends AbstractGame {
     private GameOver gameOver = new GameOver();
     private boolean isGameOver = false;
     private StartInstruction startInstruction = new StartInstruction();
+    private String fileName;
 
     /**
      * The constructor
@@ -56,7 +60,10 @@ public class ShadowMario extends AbstractGame {
         Properties message_props = IOUtils.readPropertiesFile("res/message_en.properties");
         //initialising the game
         ShadowMario game = new ShadowMario(game_props, message_props);
-        String fileName = game_props.getProperty("level1File");
+
+        game.run();
+    }
+    public void LoadLevel(String fileName){
         //create a 2D array 'data' to store and initialise the positions for all game objects
         int dataLength = IOUtils.countLines(fileName);
         String[][] data = IOUtils.readCsv(fileName);
@@ -65,26 +72,49 @@ public class ShadowMario extends AbstractGame {
             double x = Double.parseDouble(data[i][1]);
             double y = Double.parseDouble(data[i][2]);
             switch (entityType) {
+                case "ENEMY_BOSS":
+                    enemyBoss = new EnemyBoss(x, y);
+                    break;
+                case "INVINCIBLE_POWER":
+                    invinciblePowers.add(new InvinciblePower(x, y));
+                    break;
+                case "FLYING_PLATFORM":
+                    flyingPlatforms.add(new FlyingPlatform(x, y));
+                    break;
+                case "DOUBLE_SCORE":
+                    doubleScorePowers.add(new DoubleScorePower(x, y));
+                    break;
                 case "PLATFORM":
-                    game.platform = new Platform(x, y);
+                    platform = new Platform(x, y);
                     break;
                 case "PLAYER":
-                    game.player = new Player(x, y);
+                    player = new Player(x, y);
                     break;
                 case "COIN":
-                    game.coins.add(new Coin(x, y));
-                    game.countCoins += 1;
+                    coins.add(new Coin(x, y));
                     break;
                 case "ENEMY":
-                    game.enemies.add(new Enemy(x, y));
-                    game.countEnemies += 1;
+                    enemies.add(new Enemy(x, y));
                     break;
                 case "END_FLAG":
-                    game.endFlag = new EndFlag(x, y);
+                    endFlag = new EndFlag(x, y);
                     break;
             }
         }
-        game.run();
+    }
+
+    public void resetGame(){
+        coins.clear();
+        enemies.clear();
+        health.resetHealth();
+        score.resetScore();
+        player = null;
+        endFlag = null;
+        enemyBoss = null;
+        platform = null;
+        GiveInstruction = false;
+        isGameOver = false;
+        WonGame = false;
     }
 
     /**
@@ -104,7 +134,19 @@ public class ShadowMario extends AbstractGame {
             if (GiveInstruction){
                 startInstruction.update(input);
                 title.update(input);
-                if (input.wasPressed(Keys.SPACE)){
+                if (input.wasPressed(Keys.NUM_1)){
+                    fileName = game_props.getProperty("level1File");
+                    LoadLevel(fileName);
+                    GiveInstruction = false;
+                }
+                else if (input.wasPressed(Keys.NUM_2)){
+                    fileName = game_props.getProperty("level2File");
+                    LoadLevel(fileName);
+                    GiveInstruction = false;
+                }
+                else if (input.wasPressed(Keys.NUM_3)){
+                    fileName = game_props.getProperty("level3File");
+                    LoadLevel(fileName);
                     GiveInstruction = false;
                 }
             }
@@ -113,6 +155,10 @@ public class ShadowMario extends AbstractGame {
                 platform.update(input);
                 player.update(input);
                 endFlag.update(input);
+                if (enemyBoss!=null){
+                    enemyBoss.update(input);
+                }
+
                 //if collide with EndFlag, win the game
                 if (player.getX() < endFlag.getX_boundary()&&
                         player.getX_boundary() > endFlag.getX() &&
@@ -145,6 +191,51 @@ public class ShadowMario extends AbstractGame {
                         enemy.setDamage(0);
                     }
                 }
+                //if collide with a DoubleScorePower
+                for (DoubleScorePower doubleScorePower : doubleScorePowers){
+                    doubleScorePower.update((input));
+                    if (player.getX() < doubleScorePower.getX_boundary()&&
+                            player.getX_boundary() > doubleScorePower.getX() &&
+                            player.getY() < doubleScorePower.getY_boundary() &&
+                            player.getY_boundary() > doubleScorePower.getY()) {
+                        doubleScorePower.setVerticalSpeed(-10);
+                        doubleScorePower.setActive();
+                    }
+                }
+                //if collide with a InvinciblePower
+                for (InvinciblePower invinciblePower: invinciblePowers){
+                    invinciblePower.update((input));
+                    if (player.getX() < invinciblePower.getX_boundary()&&
+                            player.getX_boundary() > invinciblePower.getX() &&
+                            player.getY() < invinciblePower.getY_boundary() &&
+                            player.getY_boundary() > invinciblePower.getY()) {
+                        invinciblePower.setVerticalSpeed(-10);
+                        invinciblePower.setActive();
+                    }
+                }
+                //show flying platforms and make player stand on flying platforms
+                for (FlyingPlatform flyingPlatform: flyingPlatforms){
+                    flyingPlatform.update((input));
+                    //check if the player lands on flying platforms
+                    if ((Math.abs(player.getX() - flyingPlatform.x) < flyingPlatform.getHalfLength()) &&
+                            (Math.abs(player.getY() - flyingPlatform.y) <= flyingPlatform.getHalfHeight()) &&
+                            (Math.abs(player.getY() - flyingPlatform.y) >= flyingPlatform.getHalfHeight() - 1)) {
+                        //place the player on the platform
+                        if (!player.isOnFlyingPlatform()){
+                            player.setVerticalSpeed(0);
+                            player.setOnFlyingPlatform(true);
+                            player.setJumping(false);
+                            flyingPlatform.setPlayerOn(true);
+                        }
+                    }
+                    //when the player falls from the flying platforms
+                    else if ((Math.abs(player.getX() - flyingPlatform.x) > flyingPlatform.getHalfLength()) &&
+                        flyingPlatform.isPlayerOn()){
+                        player.setOnFlyingPlatform(false);
+                        flyingPlatform.setPlayerOn(false);
+                        player.setJumping(true);
+                    }
+                }
                 health.update(input);
                 //if health is less or equal to 0, game over and set the player to dead
                 if (health.getHealth() <= 0){
@@ -161,6 +252,8 @@ public class ShadowMario extends AbstractGame {
                         isGameOver = true;
                     }
                 }
+
+
             }
         }
         else {
@@ -189,21 +282,20 @@ public class ShadowMario extends AbstractGame {
             else {
                 startInstruction.update(input);
                 title.update(input);
-                if (input.wasPressed(Keys.SPACE)){
-                    score.resetScore();
-                    endFlag.resetObject();
-                    platform.resetObject();
-                    player.resetObject();
-                    for (Coin coin : coins) {
-                        coin.resetObject();
-                    }
-                    for (Enemy enemy : enemies) {
-                        enemy.resetObject();
-                    }
-                    health.resetHealth();
-                    GiveInstruction = false;
-                    isGameOver = false;
-                    WonGame = false;
+                if (input.wasPressed(Keys.NUM_1)){
+                    resetGame();
+                    fileName = game_props.getProperty("level1File");
+                    LoadLevel(fileName);
+                }
+                else if (input.wasPressed(Keys.NUM_2)){
+                    resetGame();
+                    fileName = game_props.getProperty("level2File");
+                    LoadLevel(fileName);
+                }
+                else if (input.wasPressed(Keys.NUM_3)){
+                    resetGame();
+                    fileName = game_props.getProperty("level3File");
+                    LoadLevel(fileName);
                 }
             }
         }
