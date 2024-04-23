@@ -5,7 +5,7 @@ import java.util.Random;
 
 import java.util.Properties;
 
-public class EnemyBoss extends GameObject{
+public class EnemyBoss extends GameObject implements Shoot, Moveable{
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
     String imageName;
     final private Image enemyBoss;
@@ -40,12 +40,7 @@ public class EnemyBoss extends GameObject{
                 countFrame += 1;
                 shootFireBall = false;
             }
-            if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
-                x += horizontalMoveSpeed;
-            }
-            if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-                x -= horizontalMoveSpeed;
-            }
+            move(input);
         }
         else {
             y += verticalSpeed;
@@ -93,5 +88,13 @@ public class EnemyBoss extends GameObject{
 
     public void setShootFireBall(boolean shootFireBall) {
         this.shootFireBall = shootFireBall;
+    }
+    public void move(Input input){
+        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
+            x += horizontalMoveSpeed;
+        }
+        if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
+            x -= horizontalMoveSpeed;
+        }
     }
 }

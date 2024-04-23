@@ -4,7 +4,7 @@ import bagel.Keys;
 
 import java.util.Properties;
 
-public class EndFlag extends GameObject {
+public class EndFlag extends GameObject implements Moveable{
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
     String imageName;
     private double radius;
@@ -25,15 +25,17 @@ public class EndFlag extends GameObject {
     public double getY_boundary() {
         return y+radius;
     }
-
-    public void update(Input input) {
-        //make it do not go out of range of the platform
-        if (input.isDown(Keys.LEFT) && !isPlayerDead && x < original_x) {
+    public void move(Input input){
+        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
             x += horizontalMoveSpeed;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
             x -= horizontalMoveSpeed;
         }
+    }
+
+    public void update(Input input) {
+        move(input);
         endFlag.draw(x,y);
     }
 }

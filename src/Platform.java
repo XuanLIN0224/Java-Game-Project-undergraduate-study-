@@ -2,9 +2,10 @@ import bagel.Image;
 import bagel.Input;
 import bagel.Keys;
 
+import java.util.Map;
 import java.util.Properties;
 
-public class Platform extends GameObject {
+public class Platform extends GameObject implements Moveable {
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
     String imageName;
     final private Image platform;
@@ -17,13 +18,15 @@ public class Platform extends GameObject {
     }
 
     public void update(Input input) {
+        move(input);
+        platform.draw(x,y);
+    }
+    public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
             x += horizontalMoveSpeed;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
             x -= horizontalMoveSpeed;
         }
-        platform.draw(x,y);
     }
-
 }

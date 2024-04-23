@@ -4,7 +4,7 @@ import bagel.Keys;
 
 import java.util.Properties;
 
-public class Coin extends GameObject {
+public class Coin extends GameObject implements Moveable {
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
     String imageName = game_props.getProperty("gameObjects.coin.image");
     private Image coin;
@@ -44,15 +44,17 @@ public class Coin extends GameObject {
         value = Integer.parseInt(game_props.getProperty("gameObjects.coin.value"));
         isPlayerDead = false;
     }
-
-    public void update(Input input) {
-        //make it do not go out of range of the platform
-        if (input.isDown(Keys.LEFT) && !isPlayerDead && x < original_x) {
+    public void move(Input input){
+        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
             x += horizontalMoveSpeed;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
             x -= horizontalMoveSpeed;
         }
+    }
+
+    public void update(Input input) {
+        move(input);
         y += verticalMoveSpeed;
         coin.draw(x,y);
     }

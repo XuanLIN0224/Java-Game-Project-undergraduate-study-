@@ -4,7 +4,7 @@ import bagel.Keys;
 import java.util.Properties;
 import java.util.Random;
 
-public class Enemy extends GameObject {
+public class Enemy extends GameObject implements Moveable{
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
     String imageName;
     private Image enemy;
@@ -50,6 +50,14 @@ public class Enemy extends GameObject {
     public void setDamage(double damage) {
         this.damage = damage;
     }
+    public void move(Input input){
+        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
+            x += horizontalMoveSpeed;
+        }
+        if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
+            x -= horizontalMoveSpeed;
+        }
+    }
 
 
     public void update(Input input) {
@@ -69,13 +77,7 @@ public class Enemy extends GameObject {
             distanceMoved += (-direction);
         }
 
-        // Player-controlled movement behavior
-        if (input.isDown(Keys.LEFT) && !isPlayerDead && x < original_x) {
-            x += horizontalMoveSpeed;
-        }
-        if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-            x -= horizontalMoveSpeed;
-        }
+        move(input);
 
         enemy.draw(x, y);
     }

@@ -5,7 +5,7 @@ import java.util.Random;
 
 import java.util.Properties;
 
-public class FlyingPlatform extends GameObject{
+public class FlyingPlatform extends GameObject implements Moveable{
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
     String imageName;
     final private Image flyingPlatform;
@@ -46,12 +46,7 @@ public class FlyingPlatform extends GameObject{
     }
 
     public void update(Input input) {
-        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
-            x += horizontalMoveSpeed;
-        }
-        if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-            x -= horizontalMoveSpeed;
-        }
+        move(input);
         moveRandomly();
         flyingPlatform.draw(x,y);
     }
@@ -69,6 +64,14 @@ public class FlyingPlatform extends GameObject{
         else if (direction == -1){
             x += direction;
             distanceMoved += (-direction);
+        }
+    }
+    public void move(Input input){
+        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
+            x += horizontalMoveSpeed;
+        }
+        if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
+            x -= horizontalMoveSpeed;
         }
     }
 }

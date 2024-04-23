@@ -3,7 +3,7 @@ import bagel.Input;
 import bagel.Keys;
 import java.util.Properties;
 
-public class DoubleScorePower extends Power{
+public class DoubleScorePower extends Power implements Moveable{
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
     String imageName;
     final private Image doubleScorePower;
@@ -36,8 +36,13 @@ public class DoubleScorePower extends Power{
     public void setVerticalSpeed(int verticalSpeed) {
         this.verticalSpeed = verticalSpeed;
     }
-    public void setActive(){
-        active = true;
+    public void move(Input input){
+        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
+            x += horizontalMoveSpeed;
+        }
+        if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
+            x -= horizontalMoveSpeed;
+        }
     }
 
 
@@ -48,12 +53,7 @@ public class DoubleScorePower extends Power{
                 active = false;
             }
         }
-        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
-            x += horizontalMoveSpeed;
-        }
-        if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-            x -= horizontalMoveSpeed;
-        }
+        move(input);
         y += verticalSpeed;
         doubleScorePower.draw(x,y);
     }

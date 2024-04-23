@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Scanner;
-public class Player extends GameObject {
+public class Player extends GameObject implements Shoot{
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
     String imageName_right;
     String imageName_left;

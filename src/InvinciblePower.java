@@ -3,7 +3,7 @@ import bagel.Input;
 import bagel.Keys;
 import java.util.Properties;
 
-public class InvinciblePower extends Power{
+public class InvinciblePower extends Power implements Moveable{
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
     String imageName;
     final private Image invinciblePower;
@@ -35,9 +35,6 @@ public class InvinciblePower extends Power{
     public void setVerticalSpeed(int verticalSpeed) {
         this.verticalSpeed = verticalSpeed;
     }
-    public void setActive(){
-        active = true;
-    }
 
 
     public void update(Input input) {
@@ -47,13 +44,16 @@ public class InvinciblePower extends Power{
                 active = false;
             }
         }
+        move(input);
+        y += verticalSpeed;
+        invinciblePower.draw(x,y);
+    }
+    public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
             x += horizontalMoveSpeed;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
             x -= horizontalMoveSpeed;
         }
-        y += verticalSpeed;
-        invinciblePower.draw(x,y);
     }
 }
