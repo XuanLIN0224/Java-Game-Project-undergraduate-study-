@@ -1,8 +1,5 @@
 import bagel.*;
-
 import java.util.Properties;
-import java.io.File;
-import java.util.Scanner;
 import bagel.Image;
 import java.util.ArrayList;
 
@@ -30,7 +27,7 @@ public class ShadowMario extends AbstractGame {
     private Platform platform;
     private EnemyBoss enemyBoss;
     private Score score = new Score();
-    private Health health = new Health();
+    private PlayerHealth playerHealth = new PlayerHealth();
     private enemyBossHealth enemyBossHealth = new enemyBossHealth();
     private Win win = new Win();
     private boolean WonGame = false;
@@ -115,7 +112,7 @@ public class ShadowMario extends AbstractGame {
         enemies.clear();
         fireballsPlayer.clear();
         fireballsEnemy.clear();
-        health.resetHealth();
+        playerHealth.resetHealth();
         score.resetScore();
         if (enemyBoss != null){
             enemyBoss.resetObject();
@@ -128,6 +125,13 @@ public class ShadowMario extends AbstractGame {
         GiveInstruction = false;
         isGameOver = false;
         WonGame = false;
+    }
+
+    public boolean isCollide(double x, double y, double xBoundary, double yBoundary){
+        return player.getX() < xBoundary&&
+                player.getX_boundary() > x &&
+                player.getY() < yBoundary &&
+                player.getY_boundary() > y;
     }
 
     /**
@@ -173,10 +177,7 @@ public class ShadowMario extends AbstractGame {
                 }
 
                 //if collide with EndFlag, win the game
-                if (player.getX() < endFlag.getX_boundary()&&
-                        player.getX_boundary() > endFlag.getX() &&
-                        player.getY() > endFlag.getY_boundary() &&
-                        player.getY_boundary() > endFlag.getY()) {
+                if (isCollide(endFlag.getX(), endFlag.getY(), endFlag.getX_boundary(), endFlag.getY_boundary())) {
                     WonGame = true;
                 }
                 score.update(input);
@@ -184,10 +185,7 @@ public class ShadowMario extends AbstractGame {
                 //if collide with a coin, update score
                 for (Coin coin : coins){
                     coin.update((input));
-                    if (player.getX() < coin.getX_boundary()&&
-                            player.getX_boundary() > coin.getX() &&
-                            player.getY() < coin.getY_boundary() &&
-                            player.getY_boundary() > coin.getY()) {
+                    if (isCollide(coin.getX(), coin.getY(), coin.getX_boundary(), coin.getY_boundary())) {
                         coin.setVerticalMoveSpeed(-10);
                         if (isDoubleScorePowerActive){
                             score.updateScore(coin.getValue() * 2);
@@ -201,13 +199,10 @@ public class ShadowMario extends AbstractGame {
                 //if collide with an enemy, update health
                 for (Enemy enemy : enemies){
                     enemy.update((input));
-                    if (player.getX() < enemy.getX_boundary()&&
-                            player.getX_boundary() > enemy.getX() &&
-                            player.getY() < enemy.getY_boundary() &&
-                            player.getY_boundary() > enemy.getY()) {
+                    if (isCollide(enemy.getX(), enemy.getY(), enemy.getX_boundary(), enemy.getY_boundary())) {
                         if (!isInvinciblePowerActive){
-                            health.updateHealth(enemy.getDamage());
-                            System.out.println(health.getHealth() +"," + enemy.getDamage());
+                            playerHealth.updateHealth(enemy.getDamage());
+                            System.out.println(playerHealth.getHealth() +"," + enemy.getDamage());
                             enemy.setDamage(0);
                         }
                     }
@@ -222,10 +217,8 @@ public class ShadowMario extends AbstractGame {
                 //if collide with a DoubleScorePower
                 for (DoubleScorePower doubleScorePower : doubleScorePowers){
                     doubleScorePower.update((input));
-                    if (player.getX() < doubleScorePower.getX_boundary()&&
-                            player.getX_boundary() > doubleScorePower.getX() &&
-                            player.getY() < doubleScorePower.getY_boundary() &&
-                            player.getY_boundary() > doubleScorePower.getY()) {
+                    if (isCollide(doubleScorePower.getX(), doubleScorePower.getY(),
+                            doubleScorePower.getX_boundary(), doubleScorePower.getY_boundary())) {
                         doubleScorePower.setVerticalSpeed(-10);
                         isDoubleScorePowerActive = true;
                     }
@@ -240,10 +233,8 @@ public class ShadowMario extends AbstractGame {
                 //if collide with a InvinciblePower
                 for (InvinciblePower invinciblePower: invinciblePowers){
                     invinciblePower.update((input));
-                    if (player.getX() < invinciblePower.getX_boundary()&&
-                            player.getX_boundary() > invinciblePower.getX() &&
-                            player.getY() < invinciblePower.getY_boundary() &&
-                            player.getY_boundary() > invinciblePower.getY()) {
+                    if (isCollide(invinciblePower.getX(), invinciblePower.getY(),
+                            invinciblePower.getX_boundary(), invinciblePower.getY_boundary())) {
                         invinciblePower.setVerticalSpeed(-10);
                         isInvinciblePowerActive = true;
                     }
@@ -312,25 +303,22 @@ public class ShadowMario extends AbstractGame {
                 }
                 for (Fireball fireball : fireballsEnemy){
                     fireball.update();
-                    if (player.getX() < fireball.getX_boundary()&&
-                            player.getX_boundary() > fireball.getX() &&
-                            player.getY() < fireball.getY_boundary() &&
-                            player.getY_boundary() > fireball.getY()) {
+                    if (isCollide(fireball.getX(), fireball.getY(), fireball.getX_boundary(), fireball.getY_boundary())) {
                         fireball.setActive(false);
-                        health.updateHealth(fireball.getDamageSize());
+                        playerHealth.updateHealth(fireball.getDamageSize());
                     }
                     if ((fireball.getX() > Window.getWidth()) || (fireball.getX() < 0)){
                         fireball.setActive(false);
                     }
                 }
 
-                health.update(input);
+                playerHealth.update(input);
                 if (fileName.equals(game_props.getProperty("level3File"))){
                     enemyBossHealth.update(input);
                 }
 
                 //if health is less or equal to 0, game over and set the player to dead
-                if (health.getHealth() <= 0){
+                if (playerHealth.getHealth() <= 0){
                     player.setDead();
                     for (Coin coin : coins) {
                         coin.setPlayerDead();

@@ -44,12 +44,6 @@ public class FlyingPlatform extends GameObject implements Moveable{
     public void setPlayerOn(boolean playerOn) {
         isPlayerOn = playerOn;
     }
-
-    public void update(Input input) {
-        move(input);
-        moveRandomly();
-        flyingPlatform.draw(x,y);
-    }
     private void moveRandomly() {
         if (distanceMoved >= maxRandomDisplacementX) {
             // Reverse direction
@@ -73,5 +67,10 @@ public class FlyingPlatform extends GameObject implements Moveable{
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
             x -= horizontalMoveSpeed;
         }
+    }
+    public void update(Input input) {
+        move(input);
+        moveRandomly();
+        flyingPlatform.draw(x,y);
     }
 }
