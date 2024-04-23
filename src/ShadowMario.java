@@ -22,14 +22,16 @@ public class ShadowMario extends AbstractGame {
     ArrayList<FlyingPlatform> flyingPlatforms = new ArrayList<FlyingPlatform>();
     ArrayList<DoubleScorePower> doubleScorePowers = new ArrayList<DoubleScorePower>();
     ArrayList<InvinciblePower> invinciblePowers = new ArrayList<InvinciblePower>();
+    ArrayList<Fireball> fireballsPlayer = new ArrayList<Fireball>();
+    ArrayList<Fireball> fireballsEnemy = new ArrayList<Fireball>();
     private final Image BACKGROUND_IMAGE;
     private Player player;
     private EndFlag endFlag;
     private Platform platform;
     private EnemyBoss enemyBoss;
-    private Fireball fireball;
     private Score score = new Score();
     private Health health = new Health();
+    private enemyBossHealth enemyBossHealth = new enemyBossHealth();
     private Win win = new Win();
     private boolean WonGame = false;
     private boolean GiveInstruction = true;
@@ -236,7 +238,51 @@ public class ShadowMario extends AbstractGame {
                         player.setJumping(true);
                     }
                 }
+                //shooting fireBall
+                if (player.isShootFireBall()){
+                    player.setShootFireBall(false);
+                    if (player.isTurnLeft()){
+                        fireballsPlayer.add(new Fireball(player.x, player.y, -1));
+                    }
+                    else {
+                        fireballsPlayer.add(new Fireball(player.x, player.y, 1));
+                    }
+                }
+                for (Fireball fireball : fireballsPlayer){
+                    fireball.update();
+                    if (enemyBoss.getX() < fireball.getX_boundary()&&
+                            enemyBoss.getX_boundary() > fireball.getX() &&
+                            enemyBoss.getY() < fireball.getY_boundary() &&
+                            enemyBoss.getY_boundary() > fireball.getY() && enemyBoss!=null) {
+                        fireball.setActive(false);
+                        enemyBossHealth.updateHealth(fireball.getDamageSize());
+                    }
+                    if ((fireball.getX() > Window.getWidth()) || (fireball.getX() < 0)){
+                        fireball.setActive(false);
+                    }
+                }
+                enemyBoss.isInActivationRadius(player);
+                if (enemyBoss != null && enemyBoss.isShootFireBall()){
+                    System.out.println("SHoot Player");
+                    fireballsEnemy.add(new Fireball(enemyBoss.x, enemyBoss.y, -1));
+                    enemyBoss.setShootFireBall(false);
+                }
+                for (Fireball fireball : fireballsEnemy){
+                    fireball.update();
+                    if (player.getX() < fireball.getX_boundary()&&
+                            player.getX_boundary() > fireball.getX() &&
+                            player.getY() < fireball.getY_boundary() &&
+                            player.getY_boundary() > fireball.getY()) {
+                        fireball.setActive(false);
+                        health.updateHealth(fireball.getDamageSize());
+                    }
+                    if ((fireball.getX() > Window.getWidth()) || (fireball.getX() < 0)){
+                        fireball.setActive(false);
+                    }
+                }
+
                 health.update(input);
+                enemyBossHealth.update(input);
                 //if health is less or equal to 0, game over and set the player to dead
                 if (health.getHealth() <= 0){
                     player.setDead();
@@ -248,9 +294,22 @@ public class ShadowMario extends AbstractGame {
                     }
                     endFlag.setPlayerDead();
                     platform.setPlayerDead();
+                    enemyBoss.setPlayerDead();
                     if (player.getY() > windowHeight){
                         isGameOver = true;
                     }
+                    for (FlyingPlatform flyingPlatform : flyingPlatforms){
+                        flyingPlatform.setPlayerDead();
+                    }
+                    for (InvinciblePower invinciblePower : invinciblePowers){
+                        invinciblePower.setPlayerDead();
+                    }
+                    for (DoubleScorePower doubleScorePower : doubleScorePowers){
+                        doubleScorePower.setPlayerDead();
+                    }
+                }
+                if (enemyBossHealth.getHealth() <= 0){
+                    enemyBoss.setDead();
                 }
 
 

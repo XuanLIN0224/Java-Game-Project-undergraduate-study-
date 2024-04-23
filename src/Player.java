@@ -21,6 +21,7 @@ public class Player extends GameObject {
     private boolean isDead;
     private double verticalSpeed;
     private boolean isOnFlyingPlatform;
+    private boolean shootFireBall;
     public Player(double x, double y) {
         super(x, y);
         radius = Double.parseDouble(game_props.getProperty("gameObjects.player.radius"));
@@ -61,6 +62,18 @@ public class Player extends GameObject {
         isOnFlyingPlatform = onFlyingPlatform;
     }
 
+    public boolean isShootFireBall() {
+        return shootFireBall;
+    }
+
+    public boolean isTurnLeft() {
+        return turnLeft;
+    }
+
+    public void setShootFireBall(boolean shootFireBall) {
+        this.shootFireBall = shootFireBall;
+    }
+
     @Override
     public void resetObject() {
         super.resetObject();
@@ -88,6 +101,9 @@ public class Player extends GameObject {
             isJumping = true;
             isOnFlyingPlatform = false;
             verticalSpeed = -20;
+        }
+        if (input.wasPressed(Keys.S) && !isDead && !shootFireBall){
+            shootFireBall = true;
         }
 
         if (isJumping) {
