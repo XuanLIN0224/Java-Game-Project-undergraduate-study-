@@ -40,6 +40,11 @@ public class ShadowMario extends AbstractGame {
     private boolean isGameOver = false;
     private StartInstruction startInstruction = new StartInstruction();
     private String fileName;
+    private boolean isInvinciblePowerActive = false;
+    private boolean isDoubleScorePowerActive = false;
+    private int activeFramesInvincible = 0;
+    private int activeFramesDoubleScore = 0;
+    private boolean isFallingFromPlatform = false;
 
     /**
      * The constructor
@@ -108,8 +113,14 @@ public class ShadowMario extends AbstractGame {
     public void resetGame(){
         coins.clear();
         enemies.clear();
+        fireballsPlayer.clear();
+        fireballsEnemy.clear();
         health.resetHealth();
         score.resetScore();
+        if (enemyBoss != null){
+            enemyBoss.resetObject();
+        }
+        enemyBossHealth.resetHealth();
         player = null;
         endFlag = null;
         enemyBoss = null;
@@ -178,7 +189,12 @@ public class ShadowMario extends AbstractGame {
                             player.getY() < coin.getY_boundary() &&
                             player.getY_boundary() > coin.getY()) {
                         coin.setVerticalMoveSpeed(-10);
-                        score.updateScore(coin.getValue());
+                        if (isDoubleScorePowerActive){
+                            score.updateScore(coin.getValue() * 2);
+                        }
+                        else {
+                            score.updateScore(coin.getValue());
+                        }
                         coin.setValue(0);
                     }
                 }
@@ -189,8 +205,18 @@ public class ShadowMario extends AbstractGame {
                             player.getX_boundary() > enemy.getX() &&
                             player.getY() < enemy.getY_boundary() &&
                             player.getY_boundary() > enemy.getY()) {
-                        health.updateHealth(enemy.getDamage());
-                        enemy.setDamage(0);
+                        if (!isInvinciblePowerActive){
+                            health.updateHealth(enemy.getDamage());
+                            System.out.println(health.getHealth() +"," + enemy.getDamage());
+                            enemy.setDamage(0);
+                        }
+                    }
+                }
+                if (isDoubleScorePowerActive){
+                    activeFramesDoubleScore++;
+                    if (activeFramesDoubleScore > 500){
+                        isDoubleScorePowerActive = false;
+                        activeFramesDoubleScore = 0;
                     }
                 }
                 //if collide with a DoubleScorePower
@@ -201,7 +227,14 @@ public class ShadowMario extends AbstractGame {
                             player.getY() < doubleScorePower.getY_boundary() &&
                             player.getY_boundary() > doubleScorePower.getY()) {
                         doubleScorePower.setVerticalSpeed(-10);
-                        doubleScorePower.setActive();
+                        isDoubleScorePowerActive = true;
+                    }
+                }
+                if (isInvinciblePowerActive){
+                    activeFramesInvincible++;
+                    if (activeFramesInvincible > 500){
+                        isInvinciblePowerActive = false;
+                        activeFramesInvincible = 0;
                     }
                 }
                 //if collide with a InvinciblePower
@@ -212,7 +245,7 @@ public class ShadowMario extends AbstractGame {
                             player.getY() < invinciblePower.getY_boundary() &&
                             player.getY_boundary() > invinciblePower.getY()) {
                         invinciblePower.setVerticalSpeed(-10);
-                        invinciblePower.setActive();
+                        isInvinciblePowerActive = true;
                     }
                 }
                 //show flying platforms and make player stand on flying platforms
@@ -221,25 +254,33 @@ public class ShadowMario extends AbstractGame {
                     //check if the player lands on flying platforms
                     if ((Math.abs(player.getX() - flyingPlatform.x) < flyingPlatform.getHalfLength()) &&
                             (Math.abs(player.getY() - flyingPlatform.y) <= flyingPlatform.getHalfHeight()) &&
-                            (Math.abs(player.getY() - flyingPlatform.y) >= flyingPlatform.getHalfHeight() - 1)) {
+                            (Math.abs(player.getY() - flyingPlatform.y) >= flyingPlatform.getHalfHeight() - 1)
+                            && !isFallingFromPlatform) {
                         //place the player on the platform
                         if (!player.isOnFlyingPlatform()){
                             player.setVerticalSpeed(0);
                             player.setOnFlyingPlatform(true);
                             player.setJumping(false);
                             flyingPlatform.setPlayerOn(true);
+                            isFallingFromPlatform = false;
                         }
                     }
                     //when the player falls from the flying platforms
                     else if ((Math.abs(player.getX() - flyingPlatform.x) > flyingPlatform.getHalfLength()) &&
+                            (Math.abs(player.getY() - flyingPlatform.y) <= flyingPlatform.getHalfHeight()) &&
+                            (Math.abs(player.getY() - flyingPlatform.y) >= flyingPlatform.getHalfHeight() - 1) &&
                         flyingPlatform.isPlayerOn()){
                         player.setOnFlyingPlatform(false);
                         flyingPlatform.setPlayerOn(false);
                         player.setJumping(true);
+                        isFallingFromPlatform = true;
                     }
                 }
+                if (player.isOnGround()){
+                    isFallingFromPlatform = false;
+                }
                 //shooting fireBall
-                if (player.isShootFireBall()){
+                if ((enemyBoss != null) && player.isShootFireBall() && enemyBoss.isInActivationRadius(player)){
                     player.setShootFireBall(false);
                     if (player.isTurnLeft()){
                         fireballsPlayer.add(new Fireball(player.x, player.y, -1));
@@ -250,10 +291,10 @@ public class ShadowMario extends AbstractGame {
                 }
                 for (Fireball fireball : fireballsPlayer){
                     fireball.update();
-                    if (enemyBoss.getX() < fireball.getX_boundary()&&
+                    if (enemyBoss!=null && enemyBoss.getX() < fireball.getX_boundary()&&
                             enemyBoss.getX_boundary() > fireball.getX() &&
                             enemyBoss.getY() < fireball.getY_boundary() &&
-                            enemyBoss.getY_boundary() > fireball.getY() && enemyBoss!=null) {
+                            enemyBoss.getY_boundary() > fireball.getY()) {
                         fireball.setActive(false);
                         enemyBossHealth.updateHealth(fireball.getDamageSize());
                     }
@@ -261,7 +302,9 @@ public class ShadowMario extends AbstractGame {
                         fireball.setActive(false);
                     }
                 }
-                enemyBoss.isInActivationRadius(player);
+                if (enemyBoss != null){
+                    enemyBoss.isInActivationRadius(player);
+                }
                 if (enemyBoss != null && enemyBoss.isShootFireBall()){
                     System.out.println("SHoot Player");
                     fireballsEnemy.add(new Fireball(enemyBoss.x, enemyBoss.y, -1));
@@ -282,7 +325,10 @@ public class ShadowMario extends AbstractGame {
                 }
 
                 health.update(input);
-                enemyBossHealth.update(input);
+                if (fileName.equals(game_props.getProperty("level3File"))){
+                    enemyBossHealth.update(input);
+                }
+
                 //if health is less or equal to 0, game over and set the player to dead
                 if (health.getHealth() <= 0){
                     player.setDead();
@@ -308,7 +354,7 @@ public class ShadowMario extends AbstractGame {
                         doubleScorePower.setPlayerDead();
                     }
                 }
-                if (enemyBossHealth.getHealth() <= 0){
+                if ((enemyBoss != null) && (enemyBossHealth.getHealth() <= 0)){
                     enemyBoss.setDead();
                 }
 

@@ -21,13 +21,13 @@ public class Health {
         font = new Font(FontSource, ScoreFontSize);
         Health_x = Integer.parseInt(game_props.getProperty("playerHealth.x"));
         Health_y = Integer.parseInt(game_props.getProperty("playerHealth.y"));
-        health = 1;
+        health = 1f;
     }
     public void updateHealth(double health) {
-        this.health -= health;
+        this.health = (this.health*100 - health*100)/100;
     }
     public void resetHealth() {
-        health = 1;
+        health = 1f;
     }
 
     public double getHealth() {

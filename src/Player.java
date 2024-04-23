@@ -85,6 +85,14 @@ public class Player extends GameObject {
         isJumping = jumping;
     }
 
+    public boolean isOnGround() {
+        return onGround;
+    }
+
+    public void setOnGround(boolean onGround) {
+        this.onGround = onGround;
+    }
+
     public void update(Input input) {
         if (input.isDown(Keys.LEFT) && !isDead) {
             turnLeft = true;
