@@ -10,7 +10,6 @@ public class enemyBossHealth extends Health {
     private Font font;
     private int Health_x;
     private int Health_y;
-    private double health;
 
     public enemyBossHealth() {
         super();
@@ -20,7 +19,7 @@ public class enemyBossHealth extends Health {
         Health_y = Integer.parseInt(game_props.getProperty("enemyBossHealth.y"));
     }
 
-    public void update(Input input) {
+    public void update() {
         String scoreText = healthMessage + (int)(health*100);
         DrawOptions options = new DrawOptions();
         font.drawString(scoreText, Health_x, Health_y, options.setBlendColour(Colour.RED));

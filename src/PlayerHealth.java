@@ -18,7 +18,7 @@ public class PlayerHealth extends Health{
         Health_y = Integer.parseInt(game_props.getProperty("playerHealth.y"));
     }
 
-    public void update(Input input) {
+    public void update() {
         String scoreText = healthMessage + (int)(health*100);
         font.drawString(scoreText, Health_x, Health_y);
     }

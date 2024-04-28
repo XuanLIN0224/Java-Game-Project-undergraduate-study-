@@ -13,7 +13,7 @@ public class GameOver extends Message{
         gameOverMessage = message_props.getProperty("gameOver");
         messageWidth = font.getWidth(gameOverMessage);
     }
-    public void update(Input input) {
+    public void update() {
         BACKGROUND_IMAGE.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
         font.drawString(gameOverMessage, (int)((windowWidth - messageWidth)/2), y);
     }

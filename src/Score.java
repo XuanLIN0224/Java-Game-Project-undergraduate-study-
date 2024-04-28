@@ -31,7 +31,7 @@ public class Score {
         score = 0;
     }
 
-    public void update(Input input) {
+    public void update() {
         String scoreText = ScoreMessage + score;
         font.drawString(scoreText, Score_x, Score_y);
     }

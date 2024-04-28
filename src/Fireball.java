@@ -4,13 +4,13 @@ import java.util.Properties;
 
 public class Fireball {
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    String imageName;
+    private String imageName;
     final private Image fireBall;
     private double x;
     private double y;
     private double horizontalSpeed;
     private double damageSize;
-    private double radius;
+    private final double RADIUS;
     private boolean isActive;
     private int direction;
 
@@ -21,11 +21,30 @@ public class Fireball {
         fireBall = new Image(imageName);
         horizontalSpeed = Double.parseDouble(game_props.getProperty("gameObjects.fireball.speed"));
         damageSize = Double.parseDouble(game_props.getProperty("gameObjects.fireball.damageSize"));
-        radius = Double.parseDouble(game_props.getProperty("gameObjects.fireball.radius"));
+        RADIUS = Double.parseDouble(game_props.getProperty("gameObjects.fireball.radius"));
         isActive = true;
         this.direction = direction;
     }
 
+    public double getRADIUS() {
+        return RADIUS;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public double getDamageSize() {
+        return damageSize;
+    }
     public void update() {
 
         // Draw fireball if active
@@ -37,32 +56,4 @@ public class Fireball {
             damageSize = 0;
         }
     }
-    public double getX_boundary() {
-        return x + radius;
-    }
-
-    public double getY_boundary() {
-        return y + radius;
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setActive(boolean active) {
-        isActive = active;
-    }
-
-    public double getDamageSize() {
-        return damageSize;
-    }
-
 }

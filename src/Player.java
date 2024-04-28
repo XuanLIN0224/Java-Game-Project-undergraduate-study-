@@ -7,30 +7,28 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Scanner;
 public class Player extends GameObject implements Shoot{
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    String imageName_right;
-    String imageName_left;
-    private Image player_right;
-    private Image player_left;
-    private double radius;
-    private double platformY;
+    private final Properties GAME_PROPS;
+    private final Image PLAYER_RIGHT;
+    private final Image PLAYER_LEFT;
+    private final double RADIUS;
+    private final double PLATFORM_Y;
     private boolean turnLeft;
     private boolean onGround;
     private boolean isJumping;
-    private boolean isFalling;
     private boolean isDead;
     private double verticalSpeed;
     private boolean isOnFlyingPlatform;
     private boolean shootFireBall;
     public Player(double x, double y) {
         super(x, y);
-        radius = Double.parseDouble(game_props.getProperty("gameObjects.player.radius"));
-        imageName_right = game_props.getProperty("gameObjects.player.imageRight");
-        imageName_left = game_props.getProperty("gameObjects.player.imageLeft");
-        player_right = new Image(imageName_right);
-        player_left = new Image(imageName_left);
+        GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+        RADIUS = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.player.radius"));
+        String imageName_right = GAME_PROPS.getProperty("gameObjects.player.imageRight");
+        String imageName_left = GAME_PROPS.getProperty("gameObjects.player.imageLeft");
+        PLAYER_RIGHT = new Image(imageName_right);
+        PLAYER_LEFT = new Image(imageName_left);
         verticalSpeed = 0;
-        this.platformY = y;
+        this.PLATFORM_Y = y;
         turnLeft = false;
         onGround = true;
         isDead = false;
@@ -38,12 +36,16 @@ public class Player extends GameObject implements Shoot{
         isOnFlyingPlatform = false;
     }
 
+    public double getRADIUS() {
+        return RADIUS;
+    }
+
     public double getX_boundary() {
-        return x + radius;
+        return x + RADIUS;
     }
 
     public double getY_boundary() {
-        return y + radius;
+        return y + RADIUS;
     }
 
     public void setVerticalSpeed(double verticalSpeed) {
@@ -89,9 +91,6 @@ public class Player extends GameObject implements Shoot{
         return onGround;
     }
 
-    public void setOnGround(boolean onGround) {
-        this.onGround = onGround;
-    }
 
     public void update(Input input) {
         if (input.isDown(Keys.LEFT) && !isDead) {
@@ -118,8 +117,8 @@ public class Player extends GameObject implements Shoot{
             y += verticalSpeed;
             verticalSpeed += 1;
 
-            if (y >= platformY) {
-                y = platformY;
+            if (y >= PLATFORM_Y) {
+                y = PLATFORM_Y;
                 verticalSpeed = 0;
                 onGround = true;
                 isJumping = false;
@@ -131,9 +130,9 @@ public class Player extends GameObject implements Shoot{
             y += 2;
         }
         if (turnLeft) {
-            player_left.draw(x, y);
+            PLAYER_LEFT.draw(x, y);
         } else {
-            player_right.draw(x, y);
+            PLAYER_RIGHT.draw(x, y);
         }
     }
 }

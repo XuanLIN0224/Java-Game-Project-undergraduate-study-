@@ -6,9 +6,9 @@ import java.util.Random;
 
 public class Enemy extends GameObject implements Moveable{
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    String imageName;
+    private String imageName;
     private Image enemy;
-    private double radius;
+    private final double RADIUS;
     private int horizontalMoveSpeed;
     private double damage;
     private int direction; // Track the direction of movement
@@ -20,7 +20,7 @@ public class Enemy extends GameObject implements Moveable{
         super(x, y);
         imageName = game_props.getProperty("gameObjects.enemy.image");
         enemy = new Image(imageName);
-        radius = Double.parseDouble(game_props.getProperty("gameObjects.enemy.radius"));
+        RADIUS = Double.parseDouble(game_props.getProperty("gameObjects.enemy.radius"));
         horizontalMoveSpeed = Integer.parseInt(game_props.getProperty("gameObjects.enemy.speed"));
         damage = Double.parseDouble(game_props.getProperty("gameObjects.enemy.damageSize"));
         distanceMoved = 0;
@@ -34,13 +34,8 @@ public class Enemy extends GameObject implements Moveable{
         damage = Double.parseDouble(game_props.getProperty("gameObjects.enemy.damageSize"));
         isPlayerDead = false;
     }
-
-    public double getX_boundary() {
-        return x + radius;
-    }
-
-    public double getY_boundary() {
-        return y + radius;
+    public double getRADIUS() {
+        return RADIUS;
     }
 
     public double getDamage() {

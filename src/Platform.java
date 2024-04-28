@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class Platform extends GameObject implements Moveable {
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    String imageName;
+    private String imageName;
     final private Image platform;
     private int horizontalMoveSpeed;
     public Platform(double x, double y) {

@@ -22,7 +22,7 @@ public class Title {
         y = Integer.parseInt(game_props.getProperty("title.y"));
         font = new Font(FontSource, titleFontSize);
     }
-    public void update(Input input) {
+    public void update() {
         font.drawString(title, x, y);
     }
 }

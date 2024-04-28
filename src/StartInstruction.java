@@ -11,7 +11,7 @@ public class StartInstruction {
     private final Image BACKGROUND_IMAGE;
     private String FontSource;
     private String instructionMessage;
-    private int ScoreFontSize;
+    private int instructionFontSize;
     private int y;
     private int windowWidth;
     private Font font;
@@ -21,13 +21,13 @@ public class StartInstruction {
         BACKGROUND_IMAGE = new Image(game_props.getProperty("backgroundImage"));
         FontSource = game_props.getProperty("font");
         instructionMessage = message_props.getProperty("instruction");
-        ScoreFontSize = Integer.parseInt(game_props.getProperty("instruction.fontSize"));
+        instructionFontSize = Integer.parseInt(game_props.getProperty("instruction.fontSize"));
         y = Integer.parseInt(game_props.getProperty("instruction.y"));
         windowWidth = Integer.parseInt(game_props.getProperty("windowWidth"));
-        font = new Font(FontSource, ScoreFontSize);
+        font = new Font(FontSource, instructionFontSize);
         messageWidth = font.getWidth(instructionMessage);
     }
-    public void update(Input input) {
+    public void update() {
         BACKGROUND_IMAGE.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
         font.drawString(instructionMessage, (int)((windowWidth -messageWidth)/2), y);
     }

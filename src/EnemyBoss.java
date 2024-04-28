@@ -7,10 +7,10 @@ import java.util.Properties;
 
 public class EnemyBoss extends GameObject implements Shoot, Moveable{
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    String imageName;
+    private String imageName;
     final private Image enemyBoss;
     private int horizontalMoveSpeed;
-    private double radius;
+    private final double RADIUS;
     private int activationRadius;
     private boolean shootFireBall;
     private boolean inActiveRadius;
@@ -24,7 +24,7 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
         horizontalMoveSpeed = Integer.parseInt(game_props.getProperty("gameObjects.enemyBoss.speed"));
         imageName = game_props.getProperty("gameObjects.enemyBoss.image");
         enemyBoss = new Image(imageName);
-        radius = Double.parseDouble(game_props.getProperty("gameObjects.enemyBoss.radius"));
+        RADIUS = Double.parseDouble(game_props.getProperty("gameObjects.enemyBoss.radius"));
         activationRadius = Integer.parseInt(game_props.getProperty("gameObjects.enemyBoss.activationRadius"));
         shootFireBall = false;
         inActiveRadius = false;
@@ -33,27 +33,8 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
         verticalSpeed = 2;
     }
 
-    public void update(Input input) {
-        if (!isDead){
-            if (!shootFireBall && inActiveRadius){
-                System.out.println(countFrame);
-                countFrame += 1;
-                shootFireBall = false;
-            }
-            move(input);
-        }
-        else {
-            y += verticalSpeed;
-        }
-        enemyBoss.draw(x,y);
-
-    }
-    public double getX_boundary() {
-        return x + radius;
-    }
-
-    public double getY_boundary() {
-        return y + radius;
+    public double getRADIUS() {
+        return RADIUS;
     }
 
     public boolean isInActivationRadius(Player player) {
@@ -68,10 +49,6 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
             inActiveRadius = false;
         }
         return inActiveRadius;
-    }
-
-    public void setActivationRadius(int activationRadius) {
-        this.activationRadius = activationRadius;
     }
 
     public void setDead() {
@@ -96,5 +73,19 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
             x -= horizontalMoveSpeed;
         }
+    }
+    public void update(Input input) {
+        if (!isDead){
+            if (!shootFireBall && inActiveRadius){
+                System.out.println(countFrame);
+                countFrame += 1;
+                shootFireBall = false;
+            }
+            move(input);
+        }
+        else {
+            y += verticalSpeed;
+        }
+        enemyBoss.draw(x,y);
     }
 }

@@ -1,3 +1,4 @@
+import bagel.Input;
 import bagel.Keys;
 
 public class GameObject {

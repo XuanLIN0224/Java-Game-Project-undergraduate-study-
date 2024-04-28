@@ -5,7 +5,7 @@ import java.util.Properties;
 
 public class DoubleScorePower extends Power implements Moveable{
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    String imageName;
+    private String imageName;
     final private Image doubleScorePower;
 
 
@@ -26,12 +26,8 @@ public class DoubleScorePower extends Power implements Moveable{
         active = false;
     }
 
-    public double getX_boundary() {
-        return x + radius;
-    }
-
-    public double getY_boundary() {
-        return y + radius;
+    public double getRadius() {
+        return radius;
     }
     public void setVerticalSpeed(int verticalSpeed) {
         this.verticalSpeed = verticalSpeed;

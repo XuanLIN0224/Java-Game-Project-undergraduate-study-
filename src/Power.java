@@ -1,4 +1,4 @@
-public class Power extends GameObject{
+public abstract class Power extends GameObject{
     protected boolean active;
     protected double verticalSpeed;
     protected int horizontalMoveSpeed;

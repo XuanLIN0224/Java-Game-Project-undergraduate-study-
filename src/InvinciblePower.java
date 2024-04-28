@@ -5,7 +5,7 @@ import java.util.Properties;
 
 public class InvinciblePower extends Power implements Moveable{
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    String imageName;
+    private String imageName;
     final private Image invinciblePower;
 
     public InvinciblePower(double x, double y) {
@@ -25,17 +25,20 @@ public class InvinciblePower extends Power implements Moveable{
         active = false;
     }
 
-    public double getX_boundary() {
-        return x + radius;
-    }
-
-    public double getY_boundary() {
-        return y + radius;
+    public double getRadius() {
+        return radius;
     }
     public void setVerticalSpeed(int verticalSpeed) {
         this.verticalSpeed = verticalSpeed;
     }
-
+    public void move(Input input){
+        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
+            x += horizontalMoveSpeed;
+        }
+        if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
+            x -= horizontalMoveSpeed;
+        }
+    }
 
     public void update(Input input) {
         if (active){
@@ -48,12 +51,5 @@ public class InvinciblePower extends Power implements Moveable{
         y += verticalSpeed;
         invinciblePower.draw(x,y);
     }
-    public void move(Input input){
-        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
-            x += horizontalMoveSpeed;
-        }
-        if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-            x -= horizontalMoveSpeed;
-        }
-    }
+
 }

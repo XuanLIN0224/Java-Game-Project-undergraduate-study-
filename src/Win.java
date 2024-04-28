@@ -14,7 +14,7 @@ public class Win extends Message {
         messageWidth = font.getWidth(winMessage);
     }
 
-    public void update(Input input) {
+    public void update() {
         BACKGROUND_IMAGE.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
         font.drawString(winMessage, (int)((windowWidth - messageWidth)/2), y);
     }

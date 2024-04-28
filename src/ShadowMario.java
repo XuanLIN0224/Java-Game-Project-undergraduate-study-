@@ -1,5 +1,7 @@
 import bagel.*;
+
 import java.util.Properties;
+
 import bagel.Image;
 import java.util.ArrayList;
 
@@ -12,15 +14,15 @@ import static javax.swing.plaf.basic.BasicGraphicsUtils.drawString;
  * @xulin2
  */
 public class ShadowMario extends AbstractGame {
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    int windowHeight = Integer.parseInt(game_props.getProperty("windowHeight"));
-    ArrayList <Coin> coins = new ArrayList<Coin>();
-    ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-    ArrayList<FlyingPlatform> flyingPlatforms = new ArrayList<FlyingPlatform>();
-    ArrayList<DoubleScorePower> doubleScorePowers = new ArrayList<DoubleScorePower>();
-    ArrayList<InvinciblePower> invinciblePowers = new ArrayList<InvinciblePower>();
-    ArrayList<Fireball> fireballsPlayer = new ArrayList<Fireball>();
-    ArrayList<Fireball> fireballsEnemy = new ArrayList<Fireball>();
+    private Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
+    private int windowHeight = Integer.parseInt(game_props.getProperty("windowHeight"));
+    private ArrayList <Coin> coins = new ArrayList<Coin>();
+    private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+    private ArrayList<FlyingPlatform> flyingPlatforms = new ArrayList<FlyingPlatform>();
+    private ArrayList<DoubleScorePower> doubleScorePowers = new ArrayList<DoubleScorePower>();
+    private ArrayList<InvinciblePower> invinciblePowers = new ArrayList<InvinciblePower>();
+    private ArrayList<Fireball> fireballsPlayer = new ArrayList<Fireball>();
+    private ArrayList<Fireball> fireballsEnemy = new ArrayList<Fireball>();
     private final Image BACKGROUND_IMAGE;
     private Player player;
     private EndFlag endFlag;
@@ -127,11 +129,13 @@ public class ShadowMario extends AbstractGame {
         WonGame = false;
     }
 
-    public boolean isCollide(double x, double y, double xBoundary, double yBoundary){
-        return player.getX() < xBoundary&&
-                player.getX_boundary() > x &&
-                player.getY() < yBoundary &&
-                player.getY_boundary() > y;
+    public boolean isCollideWithPlayer(double x, double y, double radius){
+        return Math.sqrt(Math.pow(player.getX() - x, 2) +
+                Math.pow(player.getY() - y, 2)) <= player.getRADIUS() + radius;
+    }
+    public boolean isCollideWithBoss(double x, double y, double radius){
+        return Math.sqrt(Math.pow(enemyBoss.getX() - x, 2) +
+                Math.pow(enemyBoss.getY() - y, 2)) <= enemyBoss.getRADIUS() + radius;
     }
 
     /**
@@ -149,8 +153,8 @@ public class ShadowMario extends AbstractGame {
             //before starting the game, show the title and instruction
             BACKGROUND_IMAGE.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
             if (GiveInstruction){
-                startInstruction.update(input);
-                title.update(input);
+                startInstruction.update();
+                title.update();
                 if (input.wasPressed(Keys.NUM_1)){
                     fileName = game_props.getProperty("level1File");
                     LoadLevel(fileName);
@@ -177,15 +181,15 @@ public class ShadowMario extends AbstractGame {
                 }
 
                 //if collide with EndFlag, win the game
-                if (isCollide(endFlag.getX(), endFlag.getY(), endFlag.getX_boundary(), endFlag.getY_boundary())) {
+                if (isCollideWithPlayer(endFlag.getX(), endFlag.getY(), endFlag.getRADIUS())) {
                     WonGame = true;
                 }
-                score.update(input);
+                score.update();
 
                 //if collide with a coin, update score
                 for (Coin coin : coins){
-                    coin.update((input));
-                    if (isCollide(coin.getX(), coin.getY(), coin.getX_boundary(), coin.getY_boundary())) {
+                    coin.update(input);
+                    if (isCollideWithPlayer(coin.getX(), coin.getY(), coin.getRADIUS())) {
                         coin.setVerticalMoveSpeed(-10);
                         if (isDoubleScorePowerActive){
                             score.updateScore(coin.getValue() * 2);
@@ -199,7 +203,7 @@ public class ShadowMario extends AbstractGame {
                 //if collide with an enemy, update health
                 for (Enemy enemy : enemies){
                     enemy.update((input));
-                    if (isCollide(enemy.getX(), enemy.getY(), enemy.getX_boundary(), enemy.getY_boundary())) {
+                    if (isCollideWithPlayer(enemy.getX(), enemy.getY(), enemy.getRADIUS())) {
                         if (!isInvinciblePowerActive){
                             playerHealth.updateHealth(enemy.getDamage());
                             System.out.println(playerHealth.getHealth() +"," + enemy.getDamage());
@@ -217,8 +221,7 @@ public class ShadowMario extends AbstractGame {
                 //if collide with a DoubleScorePower
                 for (DoubleScorePower doubleScorePower : doubleScorePowers){
                     doubleScorePower.update((input));
-                    if (isCollide(doubleScorePower.getX(), doubleScorePower.getY(),
-                            doubleScorePower.getX_boundary(), doubleScorePower.getY_boundary())) {
+                    if (isCollideWithPlayer(doubleScorePower.getX(), doubleScorePower.getY(), doubleScorePower.getRadius())) {
                         doubleScorePower.setVerticalSpeed(-10);
                         isDoubleScorePowerActive = true;
                     }
@@ -233,8 +236,8 @@ public class ShadowMario extends AbstractGame {
                 //if collide with a InvinciblePower
                 for (InvinciblePower invinciblePower: invinciblePowers){
                     invinciblePower.update((input));
-                    if (isCollide(invinciblePower.getX(), invinciblePower.getY(),
-                            invinciblePower.getX_boundary(), invinciblePower.getY_boundary())) {
+                    if (isCollideWithPlayer(invinciblePower.getX(), invinciblePower.getY(),
+                            invinciblePower.getRadius())) {
                         invinciblePower.setVerticalSpeed(-10);
                         isInvinciblePowerActive = true;
                     }
@@ -282,10 +285,7 @@ public class ShadowMario extends AbstractGame {
                 }
                 for (Fireball fireball : fireballsPlayer){
                     fireball.update();
-                    if (enemyBoss!=null && enemyBoss.getX() < fireball.getX_boundary()&&
-                            enemyBoss.getX_boundary() > fireball.getX() &&
-                            enemyBoss.getY() < fireball.getY_boundary() &&
-                            enemyBoss.getY_boundary() > fireball.getY()) {
+                    if (isCollideWithBoss(fireball.getX(), fireball.getY(), fireball.getRADIUS())) {
                         fireball.setActive(false);
                         enemyBossHealth.updateHealth(fireball.getDamageSize());
                     }
@@ -303,7 +303,7 @@ public class ShadowMario extends AbstractGame {
                 }
                 for (Fireball fireball : fireballsEnemy){
                     fireball.update();
-                    if (isCollide(fireball.getX(), fireball.getY(), fireball.getX_boundary(), fireball.getY_boundary())) {
+                    if (isCollideWithPlayer(fireball.getX(), fireball.getY(), fireball.getRADIUS())) {
                         fireball.setActive(false);
                         playerHealth.updateHealth(fireball.getDamageSize());
                     }
@@ -312,9 +312,9 @@ public class ShadowMario extends AbstractGame {
                     }
                 }
 
-                playerHealth.update(input);
+                playerHealth.update();
                 if (fileName.equals(game_props.getProperty("level3File"))){
-                    enemyBossHealth.update(input);
+                    enemyBossHealth.update();
                 }
 
                 //if health is less or equal to 0, game over and set the player to dead
@@ -357,7 +357,7 @@ public class ShadowMario extends AbstractGame {
                 //when game over
                 if (isGameOver){
                     if (player.getY() >= windowHeight) {
-                        gameOver.update(input);
+                        gameOver.update();
                         if (input.wasPressed(Keys.SPACE)) {
                             GiveInstruction = true;
                         }
@@ -365,7 +365,7 @@ public class ShadowMario extends AbstractGame {
                 }
                 //when winning the game
                 else {
-                    win.update(input);
+                    win.update();
                     if (input.wasPressed(Keys.SPACE)){
                         GiveInstruction = true;
                     }
@@ -373,8 +373,8 @@ public class ShadowMario extends AbstractGame {
             }
             //reset the game entities and restart the game
             else {
-                startInstruction.update(input);
-                title.update(input);
+                startInstruction.update();
+                title.update();
                 if (input.wasPressed(Keys.NUM_1)){
                     resetGame();
                     fileName = game_props.getProperty("level1File");
