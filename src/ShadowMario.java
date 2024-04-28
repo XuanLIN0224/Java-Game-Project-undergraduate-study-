@@ -14,8 +14,8 @@ import static javax.swing.plaf.basic.BasicGraphicsUtils.drawString;
  * @xulin2
  */
 public class ShadowMario extends AbstractGame {
-    private Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    private int windowHeight = Integer.parseInt(game_props.getProperty("windowHeight"));
+    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+    private final int WINDOW_HEIGHT = Integer.parseInt(GAME_PROPS.getProperty("windowHeight"));
     private ArrayList <Coin> coins = new ArrayList<Coin>();
     private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
     private ArrayList<FlyingPlatform> flyingPlatforms = new ArrayList<FlyingPlatform>();
@@ -28,16 +28,16 @@ public class ShadowMario extends AbstractGame {
     private EndFlag endFlag;
     private Platform platform;
     private EnemyBoss enemyBoss;
-    private Score score = new Score();
-    private PlayerHealth playerHealth = new PlayerHealth();
-    private enemyBossHealth enemyBossHealth = new enemyBossHealth();
-    private Win win = new Win();
+    private final Score SCORE = new Score();
+    private final PlayerHealth PLAYER_HEALTH = new PlayerHealth();
+    private final enemyBossHealth ENEMY_BOSS_HEALTH = new enemyBossHealth();
+    private final Win WIN = new Win();
     private boolean WonGame = false;
     private boolean GiveInstruction = true;
-    private Title title = new Title();
-    private GameOver gameOver = new GameOver();
+    private final Title TITLE = new Title();
+    private final GameOver GAME_OVER = new GameOver();
     private boolean isGameOver = false;
-    private StartInstruction startInstruction = new StartInstruction();
+    private final StartInstruction START_INSTRUCTION = new StartInstruction();
     private String fileName;
     private boolean isInvinciblePowerActive = false;
     private boolean isDoubleScorePowerActive = false;
@@ -114,12 +114,12 @@ public class ShadowMario extends AbstractGame {
         enemies.clear();
         fireballsPlayer.clear();
         fireballsEnemy.clear();
-        playerHealth.resetHealth();
-        score.resetScore();
+        PLAYER_HEALTH.resetHealth();
+        SCORE.resetScore();
         if (enemyBoss != null){
             enemyBoss.resetObject();
         }
-        enemyBossHealth.resetHealth();
+        ENEMY_BOSS_HEALTH.resetHealth();
         player = null;
         endFlag = null;
         enemyBoss = null;
@@ -153,20 +153,20 @@ public class ShadowMario extends AbstractGame {
             //before starting the game, show the title and instruction
             BACKGROUND_IMAGE.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
             if (GiveInstruction){
-                startInstruction.update();
-                title.update();
+                START_INSTRUCTION.update();
+                TITLE.update();
                 if (input.wasPressed(Keys.NUM_1)){
-                    fileName = game_props.getProperty("level1File");
+                    fileName = GAME_PROPS.getProperty("level1File");
                     LoadLevel(fileName);
                     GiveInstruction = false;
                 }
                 else if (input.wasPressed(Keys.NUM_2)){
-                    fileName = game_props.getProperty("level2File");
+                    fileName = GAME_PROPS.getProperty("level2File");
                     LoadLevel(fileName);
                     GiveInstruction = false;
                 }
                 else if (input.wasPressed(Keys.NUM_3)){
-                    fileName = game_props.getProperty("level3File");
+                    fileName = GAME_PROPS.getProperty("level3File");
                     LoadLevel(fileName);
                     GiveInstruction = false;
                 }
@@ -184,7 +184,7 @@ public class ShadowMario extends AbstractGame {
                 if (isCollideWithPlayer(endFlag.getX(), endFlag.getY(), endFlag.getRADIUS())) {
                     WonGame = true;
                 }
-                score.update();
+                SCORE.update();
 
                 //if collide with a coin, update score
                 for (Coin coin : coins){
@@ -192,10 +192,10 @@ public class ShadowMario extends AbstractGame {
                     if (isCollideWithPlayer(coin.getX(), coin.getY(), coin.getRADIUS())) {
                         coin.setVerticalMoveSpeed(-10);
                         if (isDoubleScorePowerActive){
-                            score.updateScore(coin.getValue() * 2);
+                            SCORE.updateScore(coin.getValue() * 2);
                         }
                         else {
-                            score.updateScore(coin.getValue());
+                            SCORE.updateScore(coin.getValue());
                         }
                         coin.setValue(0);
                     }
@@ -205,8 +205,8 @@ public class ShadowMario extends AbstractGame {
                     enemy.update((input));
                     if (isCollideWithPlayer(enemy.getX(), enemy.getY(), enemy.getRADIUS())) {
                         if (!isInvinciblePowerActive){
-                            playerHealth.updateHealth(enemy.getDamage());
-                            System.out.println(playerHealth.getHealth() +"," + enemy.getDamage());
+                            PLAYER_HEALTH.updateHealth(enemy.getDamage());
+                            System.out.println(PLAYER_HEALTH.getHealth() +"," + enemy.getDamage());
                             enemy.setDamage(0);
                         }
                     }
@@ -287,7 +287,7 @@ public class ShadowMario extends AbstractGame {
                     fireball.update();
                     if (isCollideWithBoss(fireball.getX(), fireball.getY(), fireball.getRADIUS())) {
                         fireball.setActive(false);
-                        enemyBossHealth.updateHealth(fireball.getDamageSize());
+                        ENEMY_BOSS_HEALTH.updateHealth(fireball.getDamageSize());
                     }
                     if ((fireball.getX() > Window.getWidth()) || (fireball.getX() < 0)){
                         fireball.setActive(false);
@@ -305,20 +305,20 @@ public class ShadowMario extends AbstractGame {
                     fireball.update();
                     if (isCollideWithPlayer(fireball.getX(), fireball.getY(), fireball.getRADIUS())) {
                         fireball.setActive(false);
-                        playerHealth.updateHealth(fireball.getDamageSize());
+                        PLAYER_HEALTH.updateHealth(fireball.getDamageSize());
                     }
                     if ((fireball.getX() > Window.getWidth()) || (fireball.getX() < 0)){
                         fireball.setActive(false);
                     }
                 }
 
-                playerHealth.update();
-                if (fileName.equals(game_props.getProperty("level3File"))){
-                    enemyBossHealth.update();
+                PLAYER_HEALTH.update();
+                if (fileName.equals(GAME_PROPS.getProperty("level3File"))){
+                    ENEMY_BOSS_HEALTH.update();
                 }
 
                 //if health is less or equal to 0, game over and set the player to dead
-                if (playerHealth.getHealth() <= 0){
+                if (PLAYER_HEALTH.getHealth() <= 0){
                     player.setDead();
                     for (Coin coin : coins) {
                         coin.setPlayerDead();
@@ -329,7 +329,7 @@ public class ShadowMario extends AbstractGame {
                     endFlag.setPlayerDead();
                     platform.setPlayerDead();
                     enemyBoss.setPlayerDead();
-                    if (player.getY() > windowHeight){
+                    if (player.getY() > WINDOW_HEIGHT){
                         isGameOver = true;
                     }
                     for (FlyingPlatform flyingPlatform : flyingPlatforms){
@@ -342,7 +342,7 @@ public class ShadowMario extends AbstractGame {
                         doubleScorePower.setPlayerDead();
                     }
                 }
-                if ((enemyBoss != null) && (enemyBossHealth.getHealth() <= 0)){
+                if ((enemyBoss != null) && (ENEMY_BOSS_HEALTH.getHealth() <= 0)){
                     enemyBoss.setDead();
                 }
 
@@ -356,8 +356,8 @@ public class ShadowMario extends AbstractGame {
             if (!GiveInstruction){
                 //when game over
                 if (isGameOver){
-                    if (player.getY() >= windowHeight) {
-                        gameOver.update();
+                    if (player.getY() >= WINDOW_HEIGHT) {
+                        GAME_OVER.update();
                         if (input.wasPressed(Keys.SPACE)) {
                             GiveInstruction = true;
                         }
@@ -365,7 +365,7 @@ public class ShadowMario extends AbstractGame {
                 }
                 //when winning the game
                 else {
-                    win.update();
+                    WIN.update();
                     if (input.wasPressed(Keys.SPACE)){
                         GiveInstruction = true;
                     }
@@ -373,21 +373,21 @@ public class ShadowMario extends AbstractGame {
             }
             //reset the game entities and restart the game
             else {
-                startInstruction.update();
-                title.update();
+                START_INSTRUCTION.update();
+                TITLE.update();
                 if (input.wasPressed(Keys.NUM_1)){
                     resetGame();
-                    fileName = game_props.getProperty("level1File");
+                    fileName = GAME_PROPS.getProperty("level1File");
                     LoadLevel(fileName);
                 }
                 else if (input.wasPressed(Keys.NUM_2)){
                     resetGame();
-                    fileName = game_props.getProperty("level2File");
+                    fileName = GAME_PROPS.getProperty("level2File");
                     LoadLevel(fileName);
                 }
                 else if (input.wasPressed(Keys.NUM_3)){
                     resetGame();
-                    fileName = game_props.getProperty("level3File");
+                    fileName = GAME_PROPS.getProperty("level3File");
                     LoadLevel(fileName);
                 }
             }
