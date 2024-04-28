@@ -6,31 +6,31 @@ import java.util.Random;
 import java.util.Properties;
 
 public class EnemyBoss extends GameObject implements Shoot, Moveable{
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    private String imageName;
-    final private Image enemyBoss;
-    private int horizontalMoveSpeed;
+    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+    private final String IMAGE_NAME;
+    private final Image ENEMYBOSS;
+    private final int HORIZONTAL_SPEED;
     private final double RADIUS;
-    private int activationRadius;
+    private final int ACTIVATION_RADIUS;
     private boolean shootFireBall;
     private boolean inActiveRadius;
     private int countFrame;
-    private Random random = new Random();
+    private final Random RANDOM = new Random();
     private boolean randomShoot;
     private boolean isDead;
-    private int verticalSpeed;
+    private final int VERTICAL_SPEED;
     public EnemyBoss(double x, double y) {
         super(x, y);
-        horizontalMoveSpeed = Integer.parseInt(game_props.getProperty("gameObjects.enemyBoss.speed"));
-        imageName = game_props.getProperty("gameObjects.enemyBoss.image");
-        enemyBoss = new Image(imageName);
-        RADIUS = Double.parseDouble(game_props.getProperty("gameObjects.enemyBoss.radius"));
-        activationRadius = Integer.parseInt(game_props.getProperty("gameObjects.enemyBoss.activationRadius"));
+        HORIZONTAL_SPEED = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.enemyBoss.speed"));
+        IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.enemyBoss.image");
+        ENEMYBOSS = new Image(IMAGE_NAME);
+        RADIUS = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.enemyBoss.radius"));
+        ACTIVATION_RADIUS = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.enemyBoss.activationRadius"));
         shootFireBall = false;
         inActiveRadius = false;
         countFrame = 0;
-        randomShoot = random.nextBoolean();
-        verticalSpeed = 2;
+        randomShoot = RANDOM.nextBoolean();
+        VERTICAL_SPEED = 2;
     }
 
     public double getRADIUS() {
@@ -38,7 +38,7 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
     }
 
     public boolean isInActivationRadius(Player player) {
-        if (((x - player.getX()) <= activationRadius)){
+        if (((x - player.getX()) <= ACTIVATION_RADIUS)){
             inActiveRadius = true;
             if (countFrame == 100){
                 shootFireBall = true;
@@ -58,7 +58,7 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
     public boolean isShootFireBall() {
         if (shootFireBall){
             shootFireBall = randomShoot;
-            randomShoot = random.nextBoolean();
+            randomShoot = RANDOM.nextBoolean();
         }
         return shootFireBall;
     }
@@ -68,10 +68,10 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
     }
     public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
-            x += horizontalMoveSpeed;
+            x += HORIZONTAL_SPEED;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-            x -= horizontalMoveSpeed;
+            x -= HORIZONTAL_SPEED;
         }
     }
     public void update(Input input) {
@@ -84,8 +84,8 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
             move(input);
         }
         else {
-            y += verticalSpeed;
+            y += VERTICAL_SPEED;
         }
-        enemyBoss.draw(x,y);
+        ENEMYBOSS.draw(x,y);
     }
 }

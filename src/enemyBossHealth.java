@@ -6,22 +6,22 @@ import bagel.DrawOptions;
 
 public class enemyBossHealth extends Health {
     Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    private int HealthFontSize;
-    private Font font;
-    private int Health_x;
-    private int Health_y;
+    private final int HEALTH_FONT_SIZE;
+    private final Font FONT;
+    private final int HEALTH_X;
+    private final int HEALTH_Y;
 
     public enemyBossHealth() {
         super();
-        HealthFontSize = Integer.parseInt(game_props.getProperty("enemyBossHealth.fontSize"));
-        font = new Font(FontSource, HealthFontSize);
-        Health_x = Integer.parseInt(game_props.getProperty("enemyBossHealth.x"));
-        Health_y = Integer.parseInt(game_props.getProperty("enemyBossHealth.y"));
+        HEALTH_FONT_SIZE = Integer.parseInt(game_props.getProperty("enemyBossHealth.fontSize"));
+        FONT = new Font(FontSource, HEALTH_FONT_SIZE);
+        HEALTH_X = Integer.parseInt(game_props.getProperty("enemyBossHealth.x"));
+        HEALTH_Y = Integer.parseInt(game_props.getProperty("enemyBossHealth.y"));
     }
 
     public void update() {
         String scoreText = healthMessage + (int)(health*100);
         DrawOptions options = new DrawOptions();
-        font.drawString(scoreText, Health_x, Health_y, options.setBlendColour(Colour.RED));
+        FONT.drawString(scoreText, HEALTH_X, HEALTH_Y, options.setBlendColour(Colour.RED));
     }
 }

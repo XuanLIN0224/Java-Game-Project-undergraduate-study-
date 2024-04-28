@@ -6,27 +6,27 @@ import java.util.Map;
 import java.util.Properties;
 
 public class Platform extends GameObject implements Moveable {
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    private String imageName;
-    final private Image platform;
-    private int horizontalMoveSpeed;
+    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+    private final String IMAGE_NAME;
+    private final Image PLATFORM;
+    private final int HORIZONTAL_SPEED;
     public Platform(double x, double y) {
         super(x, y);
-        horizontalMoveSpeed = Integer.parseInt(game_props.getProperty("gameObjects.platform.speed"));
-        imageName = game_props.getProperty("gameObjects.platform.image");
-        platform = new Image(imageName);
+        HORIZONTAL_SPEED = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.platform.speed"));
+        IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.platform.image");
+        PLATFORM = new Image(IMAGE_NAME);
     }
 
     public void update(Input input) {
         move(input);
-        platform.draw(x,y);
+        PLATFORM.draw(x,y);
     }
     public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
-            x += horizontalMoveSpeed;
+            x += HORIZONTAL_SPEED;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-            x -= horizontalMoveSpeed;
+            x -= HORIZONTAL_SPEED;
         }
     }
 }

@@ -1,15 +1,17 @@
 import java.util.Properties;
 
 public class Health {
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    Properties message_props = IOUtils.readPropertiesFile("res/message_en.properties");
+    private final Properties GAME_PROPS;
+    private final Properties MESSAGE_PROPS;
     public final String FontSource;
     public final String healthMessage;
     protected double health;
 
     public Health() {
-        FontSource = game_props.getProperty("font");
-        healthMessage = message_props.getProperty("health");
+        GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+        MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
+        FontSource = GAME_PROPS.getProperty("font");
+        healthMessage = MESSAGE_PROPS.getProperty("health");
         health = 1f;
     }
     public void resetHealth() {

@@ -6,35 +6,35 @@ import java.util.Random;
 import java.util.Properties;
 
 public class FlyingPlatform extends GameObject implements Moveable{
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    private String imageName;
-    final private Image flyingPlatform;
-    private int horizontalMoveSpeed;
-    private int halfLength;
-    private int halfHeight;
-    private int maxRandomDisplacementX;
+    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+    private final String IMAGE_NAME;
+    private final Image FLYING_PLATFORM;
+    private final int HORIZONTAL_SPEED;
+    private final int HALF_LENGTH;
+    private final int HALF_HEIGHT;
+    private final int MAX_RANDOM_X_DISPLACEMENT;
     private int direction;
     private double distanceMoved;
     private boolean isPlayerOn;
     Random random = new Random();
     public FlyingPlatform(double x, double y) {
         super(x, y);
-        horizontalMoveSpeed = Integer.parseInt(game_props.getProperty("gameObjects.flyingPlatform.speed"));
-        imageName = game_props.getProperty("gameObjects.flyingPlatform.image");
-        flyingPlatform = new Image(imageName);
-        halfLength = Integer.parseInt(game_props.getProperty("gameObjects.flyingPlatform.halfLength"));
-        halfHeight = Integer.parseInt(game_props.getProperty("gameObjects.flyingPlatform.halfHeight"));
-        maxRandomDisplacementX = Integer.parseInt(game_props.getProperty("gameObjects.flyingPlatform.maxRandomDisplacementX"));
+        HORIZONTAL_SPEED = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.flyingPlatform.speed"));
+        IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.flyingPlatform.image");
+        FLYING_PLATFORM = new Image(IMAGE_NAME);
+        HALF_LENGTH = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.flyingPlatform.halfLength"));
+        HALF_HEIGHT = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.flyingPlatform.halfHeight"));
+        MAX_RANDOM_X_DISPLACEMENT = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.flyingPlatform.maxRandomDisplacementX"));
         direction = random.nextBoolean() ? 1 : -1;
         isPlayerOn = false;
     }
 
     public int getHalfLength() {
-        return halfLength;
+        return HALF_LENGTH;
     }
 
     public int getHalfHeight() {
-        return halfHeight;
+        return HALF_HEIGHT;
     }
 
     public boolean isPlayerOn() {
@@ -45,7 +45,7 @@ public class FlyingPlatform extends GameObject implements Moveable{
         isPlayerOn = playerOn;
     }
     private void moveRandomly() {
-        if (distanceMoved >= maxRandomDisplacementX) {
+        if (distanceMoved >= MAX_RANDOM_X_DISPLACEMENT) {
             // Reverse direction
             direction = -direction;
             distanceMoved = 0;
@@ -62,15 +62,15 @@ public class FlyingPlatform extends GameObject implements Moveable{
     }
     public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
-            x += horizontalMoveSpeed;
+            x += HORIZONTAL_SPEED;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-            x -= horizontalMoveSpeed;
+            x -= HORIZONTAL_SPEED;
         }
     }
     public void update(Input input) {
         move(input);
         moveRandomly();
-        flyingPlatform.draw(x,y);
+        FLYING_PLATFORM.draw(x,y);
     }
 }

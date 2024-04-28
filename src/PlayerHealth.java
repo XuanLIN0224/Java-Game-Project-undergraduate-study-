@@ -4,22 +4,23 @@ import bagel.Input;
 import java.util.Properties;
 
 public class PlayerHealth extends Health{
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    private int HealthFontSize;
-    private Font font;
-    private int Health_x;
-    private int Health_y;
+    private final Properties GAME_PROPS;
+    private final int HEALTH_FONT_SIZE;
+    private final Font FONT;
+    private final int HEALTH_X;
+    private final int HEALTH_Y;
 
     public PlayerHealth() {
         super();
-        HealthFontSize = Integer.parseInt(game_props.getProperty("playerHealth.fontSize"));
-        font = new Font(FontSource, HealthFontSize);
-        Health_x = Integer.parseInt(game_props.getProperty("playerHealth.x"));
-        Health_y = Integer.parseInt(game_props.getProperty("playerHealth.y"));
+        GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+        HEALTH_FONT_SIZE = Integer.parseInt(GAME_PROPS.getProperty("playerHealth.fontSize"));
+        FONT = new Font(FontSource, HEALTH_FONT_SIZE);
+        HEALTH_X = Integer.parseInt(GAME_PROPS.getProperty("playerHealth.x"));
+        HEALTH_Y = Integer.parseInt(GAME_PROPS.getProperty("playerHealth.y"));
     }
 
     public void update() {
         String scoreText = healthMessage + (int)(health*100);
-        font.drawString(scoreText, Health_x, Health_y);
+        FONT.drawString(scoreText, HEALTH_X, HEALTH_Y);
     }
 }

@@ -4,23 +4,23 @@ import bagel.Input;
 import java.util.Properties;
 
 public class Score {
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    Properties message_props = IOUtils.readPropertiesFile("res/message_en.properties");
-    private String FontSource;
-    private String ScoreMessage;
-    private int ScoreFontSize;
-    private Font font;
-    private int Score_x;
-    private int Score_y;
+    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+    private final Properties MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
+    private final String FONT_SOURCE;
+    private final String SCORE_MESSAGE;
+    private final int SCORE_FONT_SIZE;
+    private final Font FONT;
+    private final int SCORE_X;
+    private final int SCORE_Y;
     private int score;
 
     public Score() {
-        FontSource = game_props.getProperty("font");
-        ScoreMessage = message_props.getProperty("score");
-        ScoreFontSize = Integer.parseInt(game_props.getProperty("score.fontSize"));
-        font = new Font(FontSource, ScoreFontSize);
-        Score_x = Integer.parseInt(game_props.getProperty("score.x"));
-        Score_y = Integer.parseInt(game_props.getProperty("score.y"));
+        FONT_SOURCE = GAME_PROPS.getProperty("font");
+        SCORE_MESSAGE = MESSAGE_PROPS.getProperty("score");
+        SCORE_FONT_SIZE = Integer.parseInt(GAME_PROPS.getProperty("score.fontSize"));
+        FONT = new Font(FONT_SOURCE, SCORE_FONT_SIZE);
+        SCORE_X = Integer.parseInt(GAME_PROPS.getProperty("score.x"));
+        SCORE_Y = Integer.parseInt(GAME_PROPS.getProperty("score.y"));
         score = 0;
     }
 
@@ -32,8 +32,8 @@ public class Score {
     }
 
     public void update() {
-        String scoreText = ScoreMessage + score;
-        font.drawString(scoreText, Score_x, Score_y);
+        String scoreText = SCORE_MESSAGE + score;
+        FONT.drawString(scoreText, SCORE_X, SCORE_Y);
     }
 
 }

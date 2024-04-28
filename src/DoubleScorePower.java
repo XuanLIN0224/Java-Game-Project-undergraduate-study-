@@ -4,18 +4,18 @@ import bagel.Keys;
 import java.util.Properties;
 
 public class DoubleScorePower extends Power implements Moveable{
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    private String imageName;
-    final private Image doubleScorePower;
+    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+    private final String IMAGE_NAME;
+    private final Image DOUBLESCORE_POWER;
 
 
     public DoubleScorePower(double x, double y) {
         super(x, y);
-        horizontalMoveSpeed = Integer.parseInt(game_props.getProperty("gameObjects.doubleScore.speed"));
-        imageName = game_props.getProperty("gameObjects.doubleScore.image");
-        radius = Double.parseDouble(game_props.getProperty("gameObjects.doubleScore.radius"));
-        maxFrames = Integer.parseInt(game_props.getProperty("gameObjects.doubleScore.maxFrames"));
-        doubleScorePower = new Image(imageName);
+        horizontalSpeed = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.doubleScore.speed"));
+        IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.doubleScore.image");
+        radius = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.doubleScore.radius"));
+        maxFrames = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.doubleScore.maxFrames"));
+        DOUBLESCORE_POWER = new Image(IMAGE_NAME);
         active = false;
         verticalSpeed = 0;
         framesActive = 0;
@@ -34,10 +34,10 @@ public class DoubleScorePower extends Power implements Moveable{
     }
     public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
-            x += horizontalMoveSpeed;
+            x += horizontalSpeed;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-            x -= horizontalMoveSpeed;
+            x -= horizontalSpeed;
         }
     }
 
@@ -45,12 +45,12 @@ public class DoubleScorePower extends Power implements Moveable{
     public void update(Input input) {
         if (active){
             framesActive++;
-            if (framesActive > 500){
+            if (framesActive > MAX_ACTIVE_FRAMES){
                 active = false;
             }
         }
         move(input);
         y += verticalSpeed;
-        doubleScorePower.draw(x,y);
+        DOUBLESCORE_POWER.draw(x,y);
     }
 }

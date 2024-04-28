@@ -4,17 +4,18 @@ import bagel.Keys;
 import java.util.Properties;
 
 public class InvinciblePower extends Power implements Moveable{
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    private String imageName;
-    final private Image invinciblePower;
+    private final Properties GAME_PROPS;
+    private final String IMAGE_NAME;
+    private final Image INVINCIBLE_POWER;
 
     public InvinciblePower(double x, double y) {
         super(x, y);
-        horizontalMoveSpeed = Integer.parseInt(game_props.getProperty("gameObjects.invinciblePower.speed"));
-        imageName = game_props.getProperty("gameObjects.invinciblePower.image");
-        radius = Double.parseDouble(game_props.getProperty("gameObjects.invinciblePower.radius"));
-        maxFrames = Integer.parseInt(game_props.getProperty("gameObjects.invinciblePower.maxFrames"));
-        invinciblePower = new Image(imageName);
+        GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+        horizontalSpeed = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.invinciblePower.speed"));
+        IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.invinciblePower.image");
+        radius = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.invinciblePower.radius"));
+        maxFrames = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.invinciblePower.maxFrames"));
+        INVINCIBLE_POWER = new Image(IMAGE_NAME);
         active = false;
         verticalSpeed = 0;
         framesActive = 0;
@@ -33,23 +34,23 @@ public class InvinciblePower extends Power implements Moveable{
     }
     public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
-            x += horizontalMoveSpeed;
+            x += horizontalSpeed;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-            x -= horizontalMoveSpeed;
+            x -= horizontalSpeed;
         }
     }
 
     public void update(Input input) {
         if (active){
             framesActive++;
-            if (framesActive > 500){
+            if (framesActive > MAX_ACTIVE_FRAMES){
                 active = false;
             }
         }
         move(input);
         y += verticalSpeed;
-        invinciblePower.draw(x,y);
+        INVINCIBLE_POWER.draw(x,y);
     }
 
 }

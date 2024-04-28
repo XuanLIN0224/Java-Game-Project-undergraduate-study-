@@ -5,33 +5,33 @@ import java.util.Properties;
 import java.util.Random;
 
 public class Enemy extends GameObject implements Moveable{
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    private String imageName;
-    private Image enemy;
+    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+    private final String IMAGE_NAME;
+    private final Image ENEMY;
     private final double RADIUS;
-    private int horizontalMoveSpeed;
+    private final int HORIZONTAL_SPEED;
     private double damage;
     private int direction; // Track the direction of movement
     private double distanceMoved; // Track the distance moved
-    private int randomSpeed;
+    private final int RANDOM_SPEED;
     Random random = new Random();
 
     public Enemy(double x, double y) {
         super(x, y);
-        imageName = game_props.getProperty("gameObjects.enemy.image");
-        enemy = new Image(imageName);
-        RADIUS = Double.parseDouble(game_props.getProperty("gameObjects.enemy.radius"));
-        horizontalMoveSpeed = Integer.parseInt(game_props.getProperty("gameObjects.enemy.speed"));
-        damage = Double.parseDouble(game_props.getProperty("gameObjects.enemy.damageSize"));
+        IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.enemy.image");
+        ENEMY = new Image(IMAGE_NAME);
+        RADIUS = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.enemy.radius"));
+        HORIZONTAL_SPEED = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.enemy.speed"));
+        damage = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.enemy.damageSize"));
         distanceMoved = 0;
-        randomSpeed = Integer.parseInt(game_props.getProperty("gameObjects.flyingPlatform.randomSpeed"));
-        direction = random.nextBoolean() ? randomSpeed : -randomSpeed;
+        RANDOM_SPEED = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.flyingPlatform.randomSpeed"));
+        direction = random.nextBoolean() ? RANDOM_SPEED : -RANDOM_SPEED;
     }
 
     @Override
     public void resetObject() {
         super.resetObject();
-        damage = Double.parseDouble(game_props.getProperty("gameObjects.enemy.damageSize"));
+        damage = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.enemy.damageSize"));
         isPlayerDead = false;
     }
     public double getRADIUS() {
@@ -47,10 +47,10 @@ public class Enemy extends GameObject implements Moveable{
     }
     public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
-            x += horizontalMoveSpeed;
+            x += HORIZONTAL_SPEED;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-            x -= horizontalMoveSpeed;
+            x -= HORIZONTAL_SPEED;
         }
     }
 
@@ -74,6 +74,6 @@ public class Enemy extends GameObject implements Moveable{
 
         move(input);
 
-        enemy.draw(x, y);
+        ENEMY.draw(x, y);
     }
 }

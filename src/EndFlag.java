@@ -5,26 +5,26 @@ import bagel.Keys;
 import java.util.Properties;
 
 public class EndFlag extends GameObject implements Moveable{
-    Properties game_props = IOUtils.readPropertiesFile("res/app.properties");
-    private String imageName;
+    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+    private final String IMAGE_NAME;
     private final double RADIUS;
-    private Image endFlag;
-    private int horizontalMoveSpeed;
+    private final Image ENDFLAG;
+    private final int HORIZONTAL_SPEED;
 
     public EndFlag(double x, double y) {
         super(x, y);
-        imageName = game_props.getProperty("gameObjects.endFlag.image");
-        RADIUS = Double.parseDouble(game_props.getProperty("gameObjects.endFlag.radius"));
-        endFlag = new Image(imageName);
-        horizontalMoveSpeed = Integer.parseInt(game_props.getProperty("gameObjects.endFlag.speed"));
+        IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.endFlag.image");
+        RADIUS = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.endFlag.radius"));
+        ENDFLAG = new Image(IMAGE_NAME);
+        HORIZONTAL_SPEED = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.endFlag.speed"));
     }
 
     public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
-            x += horizontalMoveSpeed;
+            x += HORIZONTAL_SPEED;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
-            x -= horizontalMoveSpeed;
+            x -= HORIZONTAL_SPEED;
         }
     }
 
@@ -34,6 +34,6 @@ public class EndFlag extends GameObject implements Moveable{
 
     public void update(Input input) {
         move(input);
-        endFlag.draw(x,y);
+        ENDFLAG.draw(x,y);
     }
 }

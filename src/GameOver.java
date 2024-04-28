@@ -1,20 +1,22 @@
+import bagel.Font;
 import bagel.Input;
 import bagel.Window;
 
 import java.util.Properties;
 
 public class GameOver extends Message{
-    Properties message_props = IOUtils.readPropertiesFile("res/message_en.properties");
-    private String gameOverMessage;
-    private double messageWidth;
+    private final Properties MESSAGE_PROPS;
+    private final String GAME_OVER_MESSAGE;
+    private final double MESSAGE_WIDTH;
 
     public GameOver() {
         super();
-        gameOverMessage = message_props.getProperty("gameOver");
-        messageWidth = font.getWidth(gameOverMessage);
+        MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
+        GAME_OVER_MESSAGE = MESSAGE_PROPS.getProperty("gameOver");
+        MESSAGE_WIDTH = FONT.getWidth(GAME_OVER_MESSAGE);
     }
     public void update() {
         BACKGROUND_IMAGE.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
-        font.drawString(gameOverMessage, (int)((windowWidth - messageWidth)/2), y);
+        FONT.drawString(GAME_OVER_MESSAGE, (int)((WINDOW_WIDTH - MESSAGE_WIDTH)/2), Y);
     }
 }
