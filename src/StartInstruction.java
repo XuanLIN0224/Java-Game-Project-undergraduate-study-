@@ -6,8 +6,8 @@ import bagel.Window;
 import java.util.Properties;
 
 public class StartInstruction {
-    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
-    private final Properties MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
+    private final Properties GAME_PROPS;
+    private final Properties MESSAGE_PROPS;
     private final Image BACKGROUND_IMAGE;
     private final String FONT_SOURCE;
     private final String INSTRUCTION_MESSAGE;
@@ -18,6 +18,8 @@ public class StartInstruction {
     private final double MESSAGE_WIDTH;
 
     public StartInstruction() {
+        GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+        MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
         BACKGROUND_IMAGE = new Image(GAME_PROPS.getProperty("backgroundImage"));
         FONT_SOURCE = GAME_PROPS.getProperty("font");
         INSTRUCTION_MESSAGE = MESSAGE_PROPS.getProperty("instruction");

@@ -1,4 +1,4 @@
 public interface Shoot {
-    public boolean isShootFireBall();
-    public void setShootFireBall(boolean shootFireBall);
+    boolean isShootFireBall();
+    void setShootFireBall(boolean shootFireBall);
 }

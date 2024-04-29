@@ -5,7 +5,6 @@ import java.util.Properties;
 import java.util.Random;
 
 public class Enemy extends GameObject implements Moveable{
-    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
     private final String IMAGE_NAME;
     private final Image ENEMY;
     private final double RADIUS;
@@ -46,7 +45,7 @@ public class Enemy extends GameObject implements Moveable{
         this.damage = damage;
     }
     public void move(Input input){
-        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
+        if (input.isDown(Keys.LEFT) && x < ORIGINAL_X && !isPlayerDead) {
             x += HORIZONTAL_SPEED;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {

@@ -6,7 +6,6 @@ import java.util.Random;
 import java.util.Properties;
 
 public class FlyingPlatform extends GameObject implements Moveable{
-    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
     private final String IMAGE_NAME;
     private final Image FLYING_PLATFORM;
     private final int HORIZONTAL_SPEED;
@@ -16,7 +15,7 @@ public class FlyingPlatform extends GameObject implements Moveable{
     private int direction;
     private double distanceMoved;
     private boolean isPlayerOn;
-    Random random = new Random();
+    private final Random RANDOM = new Random();
     public FlyingPlatform(double x, double y) {
         super(x, y);
         HORIZONTAL_SPEED = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.flyingPlatform.speed"));
@@ -25,7 +24,7 @@ public class FlyingPlatform extends GameObject implements Moveable{
         HALF_LENGTH = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.flyingPlatform.halfLength"));
         HALF_HEIGHT = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.flyingPlatform.halfHeight"));
         MAX_RANDOM_X_DISPLACEMENT = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.flyingPlatform.maxRandomDisplacementX"));
-        direction = random.nextBoolean() ? 1 : -1;
+        direction = RANDOM.nextBoolean() ? 1 : -1;
         isPlayerOn = false;
     }
 
@@ -61,7 +60,7 @@ public class FlyingPlatform extends GameObject implements Moveable{
         }
     }
     public void move(Input input){
-        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
+        if (input.isDown(Keys.LEFT) && x < ORIGINAL_X && !isPlayerDead) {
             x += HORIZONTAL_SPEED;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {

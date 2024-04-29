@@ -4,8 +4,8 @@ import bagel.Input;
 import java.util.Properties;
 
 public class Score {
-    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
-    private final Properties MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
+    private final Properties GAME_PROPS;
+    private final Properties MESSAGE_PROPS;
     private final String FONT_SOURCE;
     private final String SCORE_MESSAGE;
     private final int SCORE_FONT_SIZE;
@@ -15,6 +15,8 @@ public class Score {
     private int score;
 
     public Score() {
+        GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+        MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
         FONT_SOURCE = GAME_PROPS.getProperty("font");
         SCORE_MESSAGE = MESSAGE_PROPS.getProperty("score");
         SCORE_FONT_SIZE = Integer.parseInt(GAME_PROPS.getProperty("score.fontSize"));

@@ -4,13 +4,11 @@ import bagel.Keys;
 import java.util.Properties;
 
 public class InvinciblePower extends Power implements Moveable{
-    private final Properties GAME_PROPS;
     private final String IMAGE_NAME;
     private final Image INVINCIBLE_POWER;
 
     public InvinciblePower(double x, double y) {
         super(x, y);
-        GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
         horizontalSpeed = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.invinciblePower.speed"));
         IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.invinciblePower.image");
         radius = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.invinciblePower.radius"));
@@ -33,7 +31,7 @@ public class InvinciblePower extends Power implements Moveable{
         this.verticalSpeed = verticalSpeed;
     }
     public void move(Input input){
-        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
+        if (input.isDown(Keys.LEFT) && x < ORIGINAL_X && !isPlayerDead) {
             x += horizontalSpeed;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {

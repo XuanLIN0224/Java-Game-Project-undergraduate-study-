@@ -1,5 +1,5 @@
 import bagel.Input;
 
 public interface Moveable {
-    public void move(Input input);
+    void move(Input input);
 }

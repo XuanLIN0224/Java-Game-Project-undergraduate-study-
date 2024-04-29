@@ -6,9 +6,8 @@ import java.util.Random;
 import java.util.Properties;
 
 public class EnemyBoss extends GameObject implements Shoot, Moveable{
-    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
     private final String IMAGE_NAME;
-    private final Image ENEMYBOSS;
+    private final Image ENEMY_BOSS;
     private final int HORIZONTAL_SPEED;
     private final double RADIUS;
     private final int ACTIVATION_RADIUS;
@@ -23,7 +22,7 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
         super(x, y);
         HORIZONTAL_SPEED = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.enemyBoss.speed"));
         IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.enemyBoss.image");
-        ENEMYBOSS = new Image(IMAGE_NAME);
+        ENEMY_BOSS = new Image(IMAGE_NAME);
         RADIUS = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.enemyBoss.radius"));
         ACTIVATION_RADIUS = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.enemyBoss.activationRadius"));
         shootFireBall = false;
@@ -67,7 +66,7 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
         this.shootFireBall = shootFireBall;
     }
     public void move(Input input){
-        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
+        if (input.isDown(Keys.LEFT) && x < ORIGINAL_X && !isPlayerDead) {
             x += HORIZONTAL_SPEED;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
@@ -86,6 +85,6 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
         else {
             y += VERTICAL_SPEED;
         }
-        ENEMYBOSS.draw(x,y);
+        ENEMY_BOSS.draw(x,y);
     }
 }

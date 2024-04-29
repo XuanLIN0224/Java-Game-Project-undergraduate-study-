@@ -44,6 +44,7 @@ public class ShadowMario extends AbstractGame {
     private int activeFramesInvincible = 0;
     private int activeFramesDoubleScore = 0;
     private boolean isFallingFromPlatform = false;
+    public final int MAX_POWER_ACTIVE_FRAMES = 500;
 
     /**
      * The constructor
@@ -190,14 +191,14 @@ public class ShadowMario extends AbstractGame {
                 for (Coin coin : coins){
                     coin.update(input);
                     if (isCollideWithPlayer(coin.getX(), coin.getY(), coin.getRADIUS())) {
-                        coin.setVerticalMoveSpeed(-10);
+                        coin.setVerticalMoveSpeed(coin.getCOLLISION_SPEED());
                         if (isDoubleScorePowerActive){
                             SCORE.updateScore(coin.getValue() * 2);
                         }
                         else {
                             SCORE.updateScore(coin.getValue());
                         }
-                        coin.setValue(0);
+                        coin.setValue(coin.getZERO_VALUE());
                     }
                 }
                 //if collide with an enemy, update health
@@ -213,7 +214,7 @@ public class ShadowMario extends AbstractGame {
                 }
                 if (isDoubleScorePowerActive){
                     activeFramesDoubleScore++;
-                    if (activeFramesDoubleScore > 500){
+                    if (activeFramesDoubleScore > MAX_POWER_ACTIVE_FRAMES){
                         isDoubleScorePowerActive = false;
                         activeFramesDoubleScore = 0;
                     }
@@ -222,13 +223,13 @@ public class ShadowMario extends AbstractGame {
                 for (DoubleScorePower doubleScorePower : doubleScorePowers){
                     doubleScorePower.update((input));
                     if (isCollideWithPlayer(doubleScorePower.getX(), doubleScorePower.getY(), doubleScorePower.getRadius())) {
-                        doubleScorePower.setVerticalSpeed(-10);
+                        doubleScorePower.setVerticalSpeed(doubleScorePower.getCOLLISION_SPEED());
                         isDoubleScorePowerActive = true;
                     }
                 }
                 if (isInvinciblePowerActive){
                     activeFramesInvincible++;
-                    if (activeFramesInvincible > 500){
+                    if (activeFramesInvincible > MAX_POWER_ACTIVE_FRAMES){
                         isInvinciblePowerActive = false;
                         activeFramesInvincible = 0;
                     }
@@ -238,7 +239,7 @@ public class ShadowMario extends AbstractGame {
                     invinciblePower.update((input));
                     if (isCollideWithPlayer(invinciblePower.getX(), invinciblePower.getY(),
                             invinciblePower.getRadius())) {
-                        invinciblePower.setVerticalSpeed(-10);
+                        invinciblePower.setVerticalSpeed(invinciblePower.getCOLLISION_SPEED());
                         isInvinciblePowerActive = true;
                     }
                 }
@@ -297,7 +298,6 @@ public class ShadowMario extends AbstractGame {
                     enemyBoss.isInActivationRadius(player);
                 }
                 if (enemyBoss != null && enemyBoss.isShootFireBall()){
-                    System.out.println("SHoot Player");
                     fireballsEnemy.add(new Fireball(enemyBoss.x, enemyBoss.y, -1));
                     enemyBoss.setShootFireBall(false);
                 }

@@ -7,7 +7,8 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.Scanner;
 public class Player extends GameObject implements Shoot{
-    private final Properties GAME_PROPS;
+    private final String IMAGE_NAME_RIGHT;
+    private final String IMAGE_NAME_LEFT;
     private final Image PLAYER_RIGHT;
     private final Image PLAYER_LEFT;
     private final double RADIUS;
@@ -21,12 +22,11 @@ public class Player extends GameObject implements Shoot{
     private boolean shootFireBall;
     public Player(double x, double y) {
         super(x, y);
-        GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
         RADIUS = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.player.radius"));
-        String imageName_right = GAME_PROPS.getProperty("gameObjects.player.imageRight");
-        String imageName_left = GAME_PROPS.getProperty("gameObjects.player.imageLeft");
-        PLAYER_RIGHT = new Image(imageName_right);
-        PLAYER_LEFT = new Image(imageName_left);
+        IMAGE_NAME_RIGHT = GAME_PROPS.getProperty("gameObjects.player.imageRight");
+        IMAGE_NAME_LEFT = GAME_PROPS.getProperty("gameObjects.player.imageLeft");
+        PLAYER_RIGHT = new Image(IMAGE_NAME_RIGHT);
+        PLAYER_LEFT = new Image(IMAGE_NAME_LEFT);
         verticalSpeed = 0;
         this.PLATFORM_Y = y;
         turnLeft = false;
@@ -38,14 +38,6 @@ public class Player extends GameObject implements Shoot{
 
     public double getRADIUS() {
         return RADIUS;
-    }
-
-    public double getX_boundary() {
-        return x + RADIUS;
-    }
-
-    public double getY_boundary() {
-        return y + RADIUS;
     }
 
     public void setVerticalSpeed(double verticalSpeed) {

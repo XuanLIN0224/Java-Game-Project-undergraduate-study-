@@ -4,9 +4,8 @@ import bagel.Keys;
 import java.util.Properties;
 
 public class DoubleScorePower extends Power implements Moveable{
-    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
     private final String IMAGE_NAME;
-    private final Image DOUBLESCORE_POWER;
+    private final Image DOUBLE_SCORE_POWER;
 
 
     public DoubleScorePower(double x, double y) {
@@ -15,7 +14,7 @@ public class DoubleScorePower extends Power implements Moveable{
         IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.doubleScore.image");
         radius = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.doubleScore.radius"));
         maxFrames = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.doubleScore.maxFrames"));
-        DOUBLESCORE_POWER = new Image(IMAGE_NAME);
+        DOUBLE_SCORE_POWER = new Image(IMAGE_NAME);
         active = false;
         verticalSpeed = 0;
         framesActive = 0;
@@ -33,7 +32,7 @@ public class DoubleScorePower extends Power implements Moveable{
         this.verticalSpeed = verticalSpeed;
     }
     public void move(Input input){
-        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
+        if (input.isDown(Keys.LEFT) && x < ORIGINAL_X && !isPlayerDead) {
             x += horizontalSpeed;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
@@ -51,6 +50,6 @@ public class DoubleScorePower extends Power implements Moveable{
         }
         move(input);
         y += verticalSpeed;
-        DOUBLESCORE_POWER.draw(x,y);
+        DOUBLE_SCORE_POWER.draw(x,y);
     }
 }

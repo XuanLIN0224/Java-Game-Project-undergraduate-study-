@@ -5,8 +5,8 @@ import bagel.Input;
 import java.util.Properties;
 
 public class Title {
-    private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
-    private final Properties MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
+    private final Properties GAME_PROPS;
+    private final Properties MESSAGE_PROPS;
     private final String FONT_SOURCE;
     private final String TITLE;
     private final int TITLE_FONT_SIZE;
@@ -15,6 +15,8 @@ public class Title {
     private final Font FONT;
 
     public Title() {
+        GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
+        MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
         FONT_SOURCE = GAME_PROPS.getProperty("font");
         TITLE = MESSAGE_PROPS.getProperty("title");
         TITLE_FONT_SIZE = Integer.parseInt(GAME_PROPS.getProperty("title.fontSize"));

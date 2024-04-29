@@ -1,18 +1,21 @@
 import bagel.Input;
 import bagel.Keys;
 
-public class GameObject {
+import java.util.Properties;
+
+public abstract class GameObject {
+    public final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
     //I made the variables protected rather than private because otherwise the child classes cannot access them
     protected double x;
     protected double y;
-    public final double original_x;
-    public final double original_y;
+    public final double ORIGINAL_X;
+    public final double ORIGINAL_Y;
     protected boolean isPlayerDead = false;
     public GameObject(double x, double y) {
         this.x = x;
         this.y = y;
-        this.original_x = x;
-        this.original_y = y;
+        this.ORIGINAL_X = x;
+        this.ORIGINAL_Y = y;
     }
     public double getX() {
         return x;
@@ -25,8 +28,9 @@ public class GameObject {
         isPlayerDead = true;
     }
     public void resetObject() {
-        x = original_x;
-        y = original_y;
+        x = ORIGINAL_X;
+        y = ORIGINAL_Y;
         isPlayerDead = false;
     }
+    public abstract void update(Input input);
 }

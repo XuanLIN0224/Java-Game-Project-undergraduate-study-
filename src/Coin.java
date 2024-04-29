@@ -5,20 +5,18 @@ import bagel.Keys;
 import java.util.Properties;
 
 public class Coin extends GameObject implements Moveable {
-    private final Properties GAME_PROPS;
-    private final String IMAGE;
+    private final String IMAGE_NAME;
     private final Image COIN;
     private final double RADIUS;
     private final int COLLISION_SPEED = -10;
     private final int HORIZONTAL_SPEED;
+    private final int ZERO_VALUE = 0;
     private int value;
     private int verticalSpeed;
-    private boolean isCollided = false;
     public Coin(double x, double y) {
         super(x, y);
-        GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
-        IMAGE = GAME_PROPS.getProperty("gameObjects.coin.image");
-        COIN = new Image(IMAGE);
+        IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.coin.image");
+        COIN = new Image(IMAGE_NAME);
         RADIUS = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.coin.radius"));
         value = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.coin.value"));
         verticalSpeed = 0;
@@ -26,11 +24,12 @@ public class Coin extends GameObject implements Moveable {
     }
 
 
-    public double getX_boundary() {
-        return x + RADIUS;
+    public int getCOLLISION_SPEED() {
+        return COLLISION_SPEED;
     }
-    public double getY_boundary() {
-        return y + RADIUS;
+
+    public int getZERO_VALUE() {
+        return ZERO_VALUE;
     }
 
     public int getValue() {
@@ -53,7 +52,7 @@ public class Coin extends GameObject implements Moveable {
         isPlayerDead = false;
     }
     public void move(Input input){
-        if (input.isDown(Keys.LEFT) && x < original_x && !isPlayerDead) {
+        if (input.isDown(Keys.LEFT) && x < ORIGINAL_X && !isPlayerDead) {
             x += HORIZONTAL_SPEED;
         }
         if (input.isDown(Keys.RIGHT) && !isPlayerDead) {
