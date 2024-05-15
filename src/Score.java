@@ -2,7 +2,11 @@ import bagel.Font;
 import bagel.Input;
 
 import java.util.Properties;
-
+/**
+ * Code for score
+ * written by
+ * @xulin2
+ */
 public class Score {
     private final Properties GAME_PROPS;
     private final Properties MESSAGE_PROPS;
@@ -13,7 +17,9 @@ public class Score {
     private final int SCORE_X;
     private final int SCORE_Y;
     private int score;
-
+    /**
+     * The constructor
+     */
     public Score() {
         GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
         MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
@@ -26,13 +32,24 @@ public class Score {
         score = 0;
     }
 
+    /**
+     * update the score
+     */
     public void updateScore(int score) {
         this.score += score;
     }
+
+    /**
+     * reset score to 0
+     */
     public void resetScore() {
         score = 0;
     }
 
+    /**
+     * Performs a state update.
+     * display score on screen
+     */
     public void update() {
         String scoreText = SCORE_MESSAGE + score;
         FONT.drawString(scoreText, SCORE_X, SCORE_Y);

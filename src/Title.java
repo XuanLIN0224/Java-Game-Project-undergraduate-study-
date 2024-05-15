@@ -3,7 +3,11 @@ import bagel.Image;
 import bagel.Input;
 
 import java.util.Properties;
-
+/**
+ * Code for title
+ * written by
+ * @xulin2
+ */
 public class Title {
     private final Properties GAME_PROPS;
     private final Properties MESSAGE_PROPS;
@@ -13,7 +17,9 @@ public class Title {
     private final int X;
     private final int Y;
     private final Font FONT;
-
+    /**
+     * The constructor
+     */
     public Title() {
         GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
         MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
@@ -24,6 +30,10 @@ public class Title {
         Y = Integer.parseInt(GAME_PROPS.getProperty("title.y"));
         FONT = new Font(FONT_SOURCE, TITLE_FONT_SIZE);
     }
+    /**
+     * Performs a state update.
+     * display title on screen
+     */
     public void update() {
         FONT.drawString(TITLE, X, Y);
     }

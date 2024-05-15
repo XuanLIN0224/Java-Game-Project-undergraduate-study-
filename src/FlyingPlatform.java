@@ -4,7 +4,11 @@ import bagel.Keys;
 import java.util.Random;
 
 import java.util.Properties;
-
+/**
+ * Code for Flying platform
+ * written by
+ * @xulin2
+ */
 public class FlyingPlatform extends GameObject{
     private final String IMAGE_NAME;
     private final Image FLYING_PLATFORM;
@@ -16,6 +20,9 @@ public class FlyingPlatform extends GameObject{
     private double distanceMoved;
     private boolean isPlayerOn;
     private final Random RANDOM = new Random();
+    /**
+     * The constructor
+     */
     public FlyingPlatform(double x, double y) {
         super(x, y);
         HORIZONTAL_SPEED = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.flyingPlatform.speed"));
@@ -28,21 +35,37 @@ public class FlyingPlatform extends GameObject{
         isPlayerOn = false;
     }
 
+    /**
+     * get the half-length
+     */
     public int getHalfLength() {
         return HALF_LENGTH;
     }
 
+    /**
+     * get the half-height
+     */
     public int getHalfHeight() {
         return HALF_HEIGHT;
     }
 
+    /**
+     * get the boolean variable isPlayerOn
+     */
     public boolean isPlayerOn() {
         return isPlayerOn;
     }
 
+    /**
+     * set the boolean variable playerOn
+     */
     public void setPlayerOn(boolean playerOn) {
         isPlayerOn = playerOn;
     }
+
+    /**
+     * the platform can move randomly in a range
+     */
     private void moveRandomly() {
         if (distanceMoved >= MAX_RANDOM_X_DISPLACEMENT) {
             // Reverse direction
@@ -59,6 +82,10 @@ public class FlyingPlatform extends GameObject{
             distanceMoved += (-direction);
         }
     }
+
+    /**
+     * the flying platforms can move with the player
+     */
     public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < ORIGINAL_X && !isPlayerDead) {
             x += HORIZONTAL_SPEED;
@@ -67,6 +94,10 @@ public class FlyingPlatform extends GameObject{
             x -= HORIZONTAL_SPEED;
         }
     }
+    /**
+     * Performs a state update.
+     * display on screen
+     */
     public void update(Input input, Level level) {
         move(input);
         moveRandomly();

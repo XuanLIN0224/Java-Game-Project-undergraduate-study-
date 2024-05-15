@@ -4,7 +4,11 @@ import bagel.Input;
 import bagel.Window;
 
 import java.util.Properties;
-
+/**
+ * Code for the start instruction
+ * written by
+ * @xulin2
+ */
 public class StartInstruction {
     private final Properties GAME_PROPS;
     private final Properties MESSAGE_PROPS;
@@ -16,7 +20,9 @@ public class StartInstruction {
     private final int WINDOW_WIDTH;
     private final Font FONT;
     private final double MESSAGE_WIDTH;
-
+    /**
+     * The constructor
+     */
     public StartInstruction() {
         GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
         MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
@@ -29,6 +35,10 @@ public class StartInstruction {
         FONT = new Font(FONT_SOURCE, INSTRUCTION_FONT_SIZE);
         MESSAGE_WIDTH = FONT.getWidth(INSTRUCTION_MESSAGE);
     }
+    /**
+     * Performs a state update.
+     * display start instruction on screen
+     */
     public void update() {
         BACKGROUND_IMAGE.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
         FONT.drawString(INSTRUCTION_MESSAGE, (int)((WINDOW_WIDTH - MESSAGE_WIDTH)/2), Y);

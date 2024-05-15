@@ -39,6 +39,9 @@ public class IOUtils {
         }
         return data;
     }
+    /**
+     * count the number of lines in the csvFile
+     */
     public static int countLines(String csvFile){
         int lines = 0;
         try{

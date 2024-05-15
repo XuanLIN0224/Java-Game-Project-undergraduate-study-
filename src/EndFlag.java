@@ -3,13 +3,19 @@ import bagel.Input;
 import bagel.Keys;
 
 import java.util.Properties;
-
+/**
+ * Code for EndFlag
+ * written by
+ * @xulin2
+ */
 public class EndFlag extends GameObject{
     private final String IMAGE_NAME;
     private final double RADIUS;
     private final Image END_FLAG;
     private final int HORIZONTAL_SPEED;
-
+    /**
+     * The constructor
+     */
     public EndFlag(double x, double y) {
         super(x, y);
         IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.endFlag.image");
@@ -18,6 +24,9 @@ public class EndFlag extends GameObject{
         HORIZONTAL_SPEED = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.endFlag.speed"));
     }
 
+    /**
+     * The end flag moves with the player
+     */
     public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < ORIGINAL_X && !isPlayerDead) {
             x += HORIZONTAL_SPEED;
@@ -26,15 +35,14 @@ public class EndFlag extends GameObject{
             x -= HORIZONTAL_SPEED;
         }
     }
-
-    public double getRADIUS() {
-        return RADIUS;
-    }
-
+    /**
+     * Performs a state update.
+     * Allows setting the game to win when collides with player
+     */
     public void update(Input input, Level level) {
         move(input);
         //if the player collide with EndFlag, win the game
-        if (ShadowMario.isCollideWithPlayer(getX(), getY(), getRADIUS())) {
+        if (ShadowMario.isCollideWithPlayer(getX(), getY(), RADIUS)) {
             level.setWonGame(true);
         }
         END_FLAG.draw(x,y);

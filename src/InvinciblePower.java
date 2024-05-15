@@ -2,11 +2,17 @@ import bagel.Image;
 import bagel.Input;
 import bagel.Keys;
 import java.util.Properties;
-
+/**
+ * Code for Invincible Power
+ * written by
+ * @xulin2
+ */
 public class InvinciblePower extends Power{
     private final String IMAGE_NAME;
     private final Image INVINCIBLE_POWER;
-
+    /**
+     * The constructor
+     */
     public InvinciblePower(double x, double y) {
         super(x, y);
         horizontalSpeed = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.invinciblePower.speed"));
@@ -18,18 +24,24 @@ public class InvinciblePower extends Power{
         verticalSpeed = 0;
         framesActive = 0;
     }
-    @Override
-    public void resetObject() {
-        super.resetObject();
-        active = false;
-    }
 
+    /**
+     * get the radius
+     */
     public double getRadius() {
         return radius;
     }
+
+    /**
+     * set the vertical speed
+     */
     public void setVerticalSpeed(int verticalSpeed) {
         this.verticalSpeed = verticalSpeed;
     }
+
+    /**
+     * the invincible power moves with the player
+     */
     public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < ORIGINAL_X && !isPlayerDead) {
             x += horizontalSpeed;
@@ -39,6 +51,11 @@ public class InvinciblePower extends Power{
         }
     }
 
+    /**
+     * Performs a state update.
+     * Allows the power to become active when collides with player
+     * Allows the power to fly up when collides with player
+     */
     public void update(Input input, Level level) {
         if (active){
             framesActive++;
@@ -48,7 +65,7 @@ public class InvinciblePower extends Power{
         }
         // if the player collides with invincible power
         if (ShadowMario.isCollideWithPlayer(getX(), getY(), getRadius())) {
-            setVerticalSpeed(getCOLLISION_SPEED());
+            setVerticalSpeed(COLLISION_SPEED);
             level.setInvinciblePowerActive(true);
         }
         move(input);

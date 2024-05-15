@@ -3,7 +3,11 @@ import bagel.Input;
 import bagel.Keys;
 import java.util.Properties;
 import java.util.Random;
-
+/**
+ * Code for Enemy
+ * written by
+ * @xulin2
+ */
 public class Enemy extends GameObject{
     private final String IMAGE_NAME;
     private final Image ENEMY;
@@ -14,7 +18,9 @@ public class Enemy extends GameObject{
     private double distanceMoved; // Track the distance moved
     private final int RANDOM_SPEED;
     private Random RANDOM = new Random();
-
+    /**
+     * The constructor
+     */
     public Enemy(double x, double y) {
         super(x, y);
         IMAGE_NAME = GAME_PROPS.getProperty("gameObjects.enemy.image");
@@ -27,23 +33,23 @@ public class Enemy extends GameObject{
         direction = RANDOM.nextBoolean() ? RANDOM_SPEED : -RANDOM_SPEED;
     }
 
-    @Override
-    public void resetObject() {
-        super.resetObject();
-        damage = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.enemy.damageSize"));
-        isPlayerDead = false;
-    }
-    public double getRADIUS() {
-        return RADIUS;
-    }
-
+    /**
+     * get the damage value of the enemy
+     */
     public double getDamage() {
         return damage;
     }
 
+    /**
+     * set the damage value of the enemy
+     */
     public void setDamage(double damage) {
         this.damage = damage;
     }
+
+    /**
+     * the enemy should move with the player
+     */
     public void move(Input input){
         if (input.isDown(Keys.LEFT) && x < ORIGINAL_X && !isPlayerDead) {
             x += HORIZONTAL_SPEED;
@@ -53,6 +59,10 @@ public class Enemy extends GameObject{
         }
     }
 
+    /**
+     * Performs a state update.
+     * Allows decreasing the health of the player when collides with player
+     */
     public void update(Input input, Level level) {
         // Random movement behavior
         if (distanceMoved >= 50) {
@@ -70,7 +80,7 @@ public class Enemy extends GameObject{
             distanceMoved += (-direction);
         }
         // if the player collides with an enemy
-        if (ShadowMario.isCollideWithPlayer(getX(), getY(), getRADIUS())) {
+        if (ShadowMario.isCollideWithPlayer(getX(), getY(), RADIUS)) {
             if (!level.isInvinciblePowerActive()){
                 level.getPLAYER_HEALTH().updateHealth(getDamage());
                 setDamage(0);

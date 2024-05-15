@@ -6,6 +6,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.Scanner;
+/**
+ * Code for player
+ * written by
+ * @xulin2
+ */
 public class Player extends GameObject implements Shoot{
     private final String IMAGE_NAME_RIGHT;
     private final String IMAGE_NAME_LEFT;
@@ -20,6 +25,9 @@ public class Player extends GameObject implements Shoot{
     private double verticalSpeed;
     private boolean isOnFlyingPlatform;
     private boolean shootFireBall;
+    /**
+     * The constructor
+     */
     public Player(double x, double y) {
         super(x, y);
         RADIUS = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.player.radius"));
@@ -36,54 +44,80 @@ public class Player extends GameObject implements Shoot{
         isOnFlyingPlatform = false;
     }
 
+    /**
+     * get the radius
+     */
     public double getRADIUS() {
         return RADIUS;
     }
 
+    /**
+     * set the vertical speed
+     */
     public void setVerticalSpeed(double verticalSpeed) {
         this.verticalSpeed = verticalSpeed;
     }
 
+    /**
+     * set the boolean variable isDead
+     */
     public void setDead() {
         isDead = true;
     }
 
+    /**
+     * get the boolean variable isOnFlyingPlatform
+     */
     public boolean isOnFlyingPlatform() {
         return isOnFlyingPlatform;
     }
 
+    /**
+     * set the boolean variable isOnFlyingPlatform
+     */
     public void setOnFlyingPlatform(boolean onFlyingPlatform) {
         isOnFlyingPlatform = onFlyingPlatform;
     }
 
+    /**
+     * get the boolean variable shootFireBall
+     */
     public boolean isShootFireBall() {
         return shootFireBall;
     }
 
+    /**
+     * get the boolean variable turnLeft
+     */
     public boolean isTurnLeft() {
         return turnLeft;
     }
 
+    /**
+     * set the boolean variable shootFireBall
+     */
     public void setShootFireBall(boolean shootFireBall) {
         this.shootFireBall = shootFireBall;
     }
 
-    @Override
-    public void resetObject() {
-        super.resetObject();
-        verticalSpeed= 0;
-        isDead = false;
-    }
-
+    /**
+     * set the boolean variable jumping
+     */
     public void setJumping(boolean jumping) {
         isJumping = jumping;
     }
 
+    /**
+     * set the boolean variable onGround
+     */
     public boolean isOnGround() {
         return onGround;
     }
 
-
+    /**
+     * Performs a state update.
+     * Allow jumping and moving
+     */
     public void update(Input input, Level level) {
         if (input.isDown(Keys.LEFT) && !isDead) {
             turnLeft = true;
@@ -115,7 +149,6 @@ public class Player extends GameObject implements Shoot{
                 onGround = true;
                 isJumping = false;
             }
-
 
         }
         if (isDead){

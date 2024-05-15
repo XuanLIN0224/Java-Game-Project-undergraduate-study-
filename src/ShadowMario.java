@@ -4,7 +4,7 @@ import bagel.Image;
 import java.util.ArrayList;
 
 /**
- * Skeleton Code for SWEN20003 Project 1, Semester 1, 2024
+ * Implemented Code for SWEN20003 Project 1, Semester 1, 2024
  *
  * Please enter your name below
  * @xulin2
@@ -50,6 +50,13 @@ public class ShadowMario extends AbstractGame {
 
         game.run();
     }
+    /**
+     * Method to load levels
+     * I prefer to use a public void method inside ShadowMario instead of in the Level class
+     * because I want the purpose of the level class to only be customising specific level behaviours.
+     * I think putting the loading level feature in the level class will make the level class too complicated,
+     * so I decided to implement the LoadLevel in the ShadowMario class
+     */
     public void LoadLevel(String fileName){
         //create a 2D array 'data' to store and initialise the positions for all game objects
         int dataLength = IOUtils.countLines(fileName);
@@ -89,26 +96,34 @@ public class ShadowMario extends AbstractGame {
             }
         }
     }
-
+    /**
+     * reset the game by clearing the arrayLists,
+     * setting enemyBoss, player to null and
+     * reset the variables
+     */
     public void resetGame(){
         gameObjects.clear();
         fireballsPlayer.clear();
         fireballsEnemy.clear();
         level.getPLAYER_HEALTH().resetHealth();
         level.getSCORE().resetScore();
-        if (enemyBoss != null){
-            enemyBoss.resetObject();
-        }
         level.getENEMY_BOSS_HEALTH().resetHealth();
         player = null;
         enemyBoss = null;
         level.resetVariables();
+        flyingPlatforms.clear();
+        Powers.clear();
     }
-
+    /**
+     * check if an object collides with the player
+     */
     public static boolean isCollideWithPlayer(double x, double y, double radius){
         return Math.sqrt(Math.pow(player.getX() - x, 2) +
                 Math.pow(player.getY() - y, 2)) <= player.getRADIUS() + radius;
     }
+    /**
+     * check if an object collides with the player
+     */
     public boolean isCollideWithBoss(double x, double y, double radius){
         return Math.sqrt(Math.pow(enemyBoss.getX() - x, 2) +
                 Math.pow(enemyBoss.getY() - y, 2)) <= enemyBoss.getRADIUS() + radius;
