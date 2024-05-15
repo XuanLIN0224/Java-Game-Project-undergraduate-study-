@@ -84,7 +84,7 @@ public class Player extends GameObject implements Shoot{
     }
 
 
-    public void update(Input input) {
+    public void update(Input input, Level level) {
         if (input.isDown(Keys.LEFT) && !isDead) {
             turnLeft = true;
         }

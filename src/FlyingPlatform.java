@@ -5,7 +5,7 @@ import java.util.Random;
 
 import java.util.Properties;
 
-public class FlyingPlatform extends GameObject implements Moveable{
+public class FlyingPlatform extends GameObject{
     private final String IMAGE_NAME;
     private final Image FLYING_PLATFORM;
     private final int HORIZONTAL_SPEED;
@@ -67,7 +67,7 @@ public class FlyingPlatform extends GameObject implements Moveable{
             x -= HORIZONTAL_SPEED;
         }
     }
-    public void update(Input input) {
+    public void update(Input input, Level level) {
         move(input);
         moveRandomly();
         FLYING_PLATFORM.draw(x,y);

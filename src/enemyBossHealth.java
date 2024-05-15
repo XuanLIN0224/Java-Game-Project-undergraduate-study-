@@ -20,7 +20,7 @@ public class enemyBossHealth extends Health {
     }
 
     public void update() {
-        String scoreText = HEALTH_MESSAGE + (int)(health*100);
+        String scoreText = HEALTH_MESSAGE + (int)(getHealth()*100);
         DrawOptions options = new DrawOptions();
         FONT.drawString(scoreText, HEALTH_X, HEALTH_Y, options.setBlendColour(Colour.RED));
     }

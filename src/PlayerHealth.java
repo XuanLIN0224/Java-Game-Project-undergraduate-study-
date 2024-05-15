@@ -18,7 +18,7 @@ public class PlayerHealth extends Health{
     }
 
     public void update() {
-        String scoreText = HEALTH_MESSAGE + (int)(health*100);
+        String scoreText = HEALTH_MESSAGE + (int)(getHealth()*100);
         FONT.drawString(scoreText, HEALTH_X, HEALTH_Y);
     }
 }

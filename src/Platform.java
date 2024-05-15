@@ -5,7 +5,7 @@ import bagel.Keys;
 import java.util.Map;
 import java.util.Properties;
 
-public class Platform extends GameObject implements Moveable {
+public class Platform extends GameObject {
     private final String IMAGE_NAME;
     private final Image PLATFORM;
     private final int HORIZONTAL_SPEED;
@@ -16,7 +16,7 @@ public class Platform extends GameObject implements Moveable {
         PLATFORM = new Image(IMAGE_NAME);
     }
 
-    public void update(Input input) {
+    public void update(Input input, Level level) {
         move(input);
         PLATFORM.draw(x,y);
     }

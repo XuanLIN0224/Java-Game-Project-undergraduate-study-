@@ -3,7 +3,7 @@ import bagel.Input;
 import bagel.Keys;
 import java.util.Properties;
 
-public class DoubleScorePower extends Power implements Moveable{
+public class DoubleScorePower extends Power{
     private final String IMAGE_NAME;
     private final Image DOUBLE_SCORE_POWER;
 
@@ -41,12 +41,17 @@ public class DoubleScorePower extends Power implements Moveable{
     }
 
 
-    public void update(Input input) {
+    public void update(Input input, Level level) {
         if (active){
             framesActive++;
             if (framesActive > MAX_ACTIVE_FRAMES){
                 active = false;
             }
+        }
+        //if the player collides with a DoubleScorePower
+        if (ShadowMario.isCollideWithPlayer(getX(), getY(), getRadius())) {
+            setVerticalSpeed(getCOLLISION_SPEED());
+            level.setDoubleScorePowerActive(true);
         }
         move(input);
         y += verticalSpeed;

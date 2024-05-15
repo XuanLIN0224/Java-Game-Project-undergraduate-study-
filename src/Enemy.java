@@ -4,7 +4,7 @@ import bagel.Keys;
 import java.util.Properties;
 import java.util.Random;
 
-public class Enemy extends GameObject implements Moveable{
+public class Enemy extends GameObject{
     private final String IMAGE_NAME;
     private final Image ENEMY;
     private final double RADIUS;
@@ -13,7 +13,7 @@ public class Enemy extends GameObject implements Moveable{
     private int direction; // Track the direction of movement
     private double distanceMoved; // Track the distance moved
     private final int RANDOM_SPEED;
-    Random random = new Random();
+    private Random RANDOM = new Random();
 
     public Enemy(double x, double y) {
         super(x, y);
@@ -24,7 +24,7 @@ public class Enemy extends GameObject implements Moveable{
         damage = Double.parseDouble(GAME_PROPS.getProperty("gameObjects.enemy.damageSize"));
         distanceMoved = 0;
         RANDOM_SPEED = Integer.parseInt(GAME_PROPS.getProperty("gameObjects.flyingPlatform.randomSpeed"));
-        direction = random.nextBoolean() ? RANDOM_SPEED : -RANDOM_SPEED;
+        direction = RANDOM.nextBoolean() ? RANDOM_SPEED : -RANDOM_SPEED;
     }
 
     @Override
@@ -53,8 +53,7 @@ public class Enemy extends GameObject implements Moveable{
         }
     }
 
-
-    public void update(Input input) {
+    public void update(Input input, Level level) {
         // Random movement behavior
         if (distanceMoved >= 50) {
             // Reverse direction
@@ -70,9 +69,15 @@ public class Enemy extends GameObject implements Moveable{
             x += direction;
             distanceMoved += (-direction);
         }
+        // if the player collides with an enemy
+        if (ShadowMario.isCollideWithPlayer(getX(), getY(), getRADIUS())) {
+            if (!level.isInvinciblePowerActive()){
+                level.getPLAYER_HEALTH().updateHealth(getDamage());
+                setDamage(0);
+            }
+        }
 
         move(input);
-
         ENEMY.draw(x, y);
     }
 }

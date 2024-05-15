@@ -5,13 +5,11 @@ import bagel.Window;
 import java.util.Properties;
 
 public class GameOver extends Message{
-    private final Properties MESSAGE_PROPS;
     private final String GAME_OVER_MESSAGE;
     private final double MESSAGE_WIDTH;
 
     public GameOver() {
         super();
-        MESSAGE_PROPS = IOUtils.readPropertiesFile("res/message_en.properties");
         GAME_OVER_MESSAGE = MESSAGE_PROPS.getProperty("gameOver");
         MESSAGE_WIDTH = FONT.getWidth(GAME_OVER_MESSAGE);
     }

@@ -4,7 +4,7 @@ import bagel.Keys;
 
 import java.util.Properties;
 
-public class Coin extends GameObject implements Moveable {
+public class Coin extends GameObject{
     private final String IMAGE_NAME;
     private final Image COIN;
     private final double RADIUS;
@@ -64,8 +64,19 @@ public class Coin extends GameObject implements Moveable {
         return RADIUS;
     }
 
-    public void update(Input input) {
+    public void update(Input input, Level level) {
         move(input);
+        //if the player collides with a coin, update score
+        if (ShadowMario.isCollideWithPlayer(getX(), getY(), getRADIUS())) {
+            setVerticalMoveSpeed(getCOLLISION_SPEED());
+            if (level.isDoubleScorePowerActive()){
+                level.getSCORE().updateScore(getValue() * 2);
+            }
+            else {
+                level.getSCORE().updateScore(getValue());
+            }
+            setValue(getZERO_VALUE());
+        }
         y += verticalSpeed;
         COIN.draw(x,y);
     }

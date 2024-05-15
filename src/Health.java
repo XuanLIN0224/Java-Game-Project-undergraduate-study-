@@ -5,7 +5,7 @@ public class Health {
     private final Properties MESSAGE_PROPS;
     public final String FONT_SOURCE;
     public final String HEALTH_MESSAGE;
-    protected double health;
+    private double health;
 
     public Health() {
         GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");

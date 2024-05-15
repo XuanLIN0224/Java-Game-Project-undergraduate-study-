@@ -32,5 +32,5 @@ public abstract class GameObject {
         y = ORIGINAL_Y;
         isPlayerDead = false;
     }
-    public abstract void update(Input input);
+    public abstract void update(Input input, Level level);
 }

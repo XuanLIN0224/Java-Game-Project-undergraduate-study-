@@ -5,7 +5,7 @@ import java.util.Random;
 
 import java.util.Properties;
 
-public class EnemyBoss extends GameObject implements Shoot, Moveable{
+public class EnemyBoss extends GameObject implements Shoot{
     private final String IMAGE_NAME;
     private final Image ENEMY_BOSS;
     private final int HORIZONTAL_SPEED;
@@ -73,12 +73,10 @@ public class EnemyBoss extends GameObject implements Shoot, Moveable{
             x -= HORIZONTAL_SPEED;
         }
     }
-    public void update(Input input) {
+    public void update(Input input, Level level) {
         if (!isDead){
             if (!shootFireBall && inActiveRadius){
-                System.out.println(countFrame);
                 countFrame += 1;
-                shootFireBall = false;
             }
             move(input);
         }

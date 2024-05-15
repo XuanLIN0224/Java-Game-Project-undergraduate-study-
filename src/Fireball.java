@@ -1,4 +1,5 @@
 import bagel.Image;
+import bagel.Window;
 
 import java.util.Properties;
 
@@ -50,6 +51,10 @@ public class Fireball {
 
         // Draw fireball if active
         if (isActive) {
+            if ((getX() > Window.getWidth()) || (getX() < 0)){
+                setActive(false);
+            }
+
             x += HORIZONTAL_SPEED * DIRECTION;
             FIREBALL.draw(x, Y);
         }

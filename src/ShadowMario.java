@@ -1,11 +1,7 @@
 import bagel.*;
-
 import java.util.Properties;
-
 import bagel.Image;
 import java.util.ArrayList;
-
-import static javax.swing.plaf.basic.BasicGraphicsUtils.drawString;
 
 /**
  * Skeleton Code for SWEN20003 Project 1, Semester 1, 2024
@@ -15,37 +11,20 @@ import static javax.swing.plaf.basic.BasicGraphicsUtils.drawString;
  */
 public class ShadowMario extends AbstractGame {
     private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
-    private final int WINDOW_HEIGHT = Integer.parseInt(GAME_PROPS.getProperty("windowHeight"));
-    private ArrayList <Coin> coins = new ArrayList<Coin>();
-    private ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-    private ArrayList<FlyingPlatform> flyingPlatforms = new ArrayList<FlyingPlatform>();
-    private ArrayList<DoubleScorePower> doubleScorePowers = new ArrayList<DoubleScorePower>();
-    private ArrayList<InvinciblePower> invinciblePowers = new ArrayList<InvinciblePower>();
-    private ArrayList<Fireball> fireballsPlayer = new ArrayList<Fireball>();
-    private ArrayList<Fireball> fireballsEnemy = new ArrayList<Fireball>();
+    private final ArrayList <GameObject> gameObjects = new ArrayList<>();
+    private final ArrayList<FlyingPlatform> flyingPlatforms = new ArrayList<>();
+    private final ArrayList<Power> Powers = new ArrayList<>();
+    private final ArrayList<Fireball> fireballsPlayer = new ArrayList<>();
+    private final ArrayList<Fireball> fireballsEnemy = new ArrayList<>();
     private final Image BACKGROUND_IMAGE;
-    private Player player;
-    private EndFlag endFlag;
-    private Platform platform;
+    private static Player player;
     private EnemyBoss enemyBoss;
-    private final Score SCORE = new Score();
-    private final PlayerHealth PLAYER_HEALTH = new PlayerHealth();
-    private final enemyBossHealth ENEMY_BOSS_HEALTH = new enemyBossHealth();
     private final Win WIN = new Win();
-    private boolean WonGame = false;
-    private boolean GiveInstruction = true;
     private final Title TITLE = new Title();
     private final GameOver GAME_OVER = new GameOver();
-    private boolean isGameOver = false;
     private final StartInstruction START_INSTRUCTION = new StartInstruction();
     private String fileName;
-    private boolean isInvinciblePowerActive = false;
-    private boolean isDoubleScorePowerActive = false;
-    private int activeFramesInvincible = 0;
-    private int activeFramesDoubleScore = 0;
-    private boolean isFallingFromPlatform = false;
-    public final int MAX_POWER_ACTIVE_FRAMES = 500;
-
+    private final Level level;
     /**
      * The constructor
      */
@@ -55,6 +34,7 @@ public class ShadowMario extends AbstractGame {
               message_props.getProperty("title"));
 
         BACKGROUND_IMAGE = new Image(game_props.getProperty("backgroundImage"));
+        level = new Level();
 
         // you can initialise other values from the property files here
         // I prefer initialise them in the main function and it works fine
@@ -83,54 +63,49 @@ public class ShadowMario extends AbstractGame {
                     enemyBoss = new EnemyBoss(x, y);
                     break;
                 case "INVINCIBLE_POWER":
-                    invinciblePowers.add(new InvinciblePower(x, y));
+                    Powers.add(new InvinciblePower(x, y));
                     break;
                 case "FLYING_PLATFORM":
                     flyingPlatforms.add(new FlyingPlatform(x, y));
                     break;
                 case "DOUBLE_SCORE":
-                    doubleScorePowers.add(new DoubleScorePower(x, y));
+                    Powers.add(new DoubleScorePower(x, y));
                     break;
                 case "PLATFORM":
-                    platform = new Platform(x, y);
+                    gameObjects.add(new Platform(x, y));
                     break;
                 case "PLAYER":
                     player = new Player(x, y);
                     break;
                 case "COIN":
-                    coins.add(new Coin(x, y));
+                    gameObjects.add(new Coin(x, y));
                     break;
                 case "ENEMY":
-                    enemies.add(new Enemy(x, y));
+                    gameObjects.add(new Enemy(x, y));
                     break;
                 case "END_FLAG":
-                    endFlag = new EndFlag(x, y);
+                    gameObjects.add(new EndFlag(x, y));
                     break;
             }
         }
     }
 
     public void resetGame(){
-        coins.clear();
-        enemies.clear();
+        gameObjects.clear();
         fireballsPlayer.clear();
         fireballsEnemy.clear();
-        PLAYER_HEALTH.resetHealth();
-        SCORE.resetScore();
+        level.getPLAYER_HEALTH().resetHealth();
+        level.getSCORE().resetScore();
         if (enemyBoss != null){
             enemyBoss.resetObject();
         }
-        ENEMY_BOSS_HEALTH.resetHealth();
+        level.getENEMY_BOSS_HEALTH().resetHealth();
         player = null;
-        endFlag = null;
         enemyBoss = null;
-        platform = null;
-        GiveInstruction = false;
-        isGameOver = false;
-        WonGame = false;
+        level.resetVariables();
     }
 
-    public boolean isCollideWithPlayer(double x, double y, double radius){
+    public static boolean isCollideWithPlayer(double x, double y, double radius){
         return Math.sqrt(Math.pow(player.getX() - x, 2) +
                 Math.pow(player.getY() - y, 2)) <= player.getRADIUS() + radius;
     }
@@ -145,119 +120,68 @@ public class ShadowMario extends AbstractGame {
      */
     @Override
     protected void update(Input input) {
+
         //while the game is not finished
-        if (!WonGame && !isGameOver){
+        if (!level.isWonGame() && !level.isGameOver()){
             // close window
             if (input.wasPressed(Keys.ESCAPE)){
                 Window.close();
             }
             //before starting the game, show the title and instruction
             BACKGROUND_IMAGE.draw(Window.getWidth()/2.0, Window.getHeight()/2.0);
-            if (GiveInstruction){
+            if (level.isGiveInstruction()){
                 START_INSTRUCTION.update();
                 TITLE.update();
                 if (input.wasPressed(Keys.NUM_1)){
                     fileName = GAME_PROPS.getProperty("level1File");
                     LoadLevel(fileName);
-                    GiveInstruction = false;
+                    level.setGiveInstruction(false);
                 }
                 else if (input.wasPressed(Keys.NUM_2)){
                     fileName = GAME_PROPS.getProperty("level2File");
                     LoadLevel(fileName);
-                    GiveInstruction = false;
+                    level.setGiveInstruction(false);
                 }
                 else if (input.wasPressed(Keys.NUM_3)){
                     fileName = GAME_PROPS.getProperty("level3File");
                     LoadLevel(fileName);
-                    GiveInstruction = false;
+                    level.setGiveInstruction(false);
                 }
             }
             else{
                 //start the game
-                platform.update(input);
-                player.update(input);
-                endFlag.update(input);
+                for (GameObject gameObject: gameObjects){
+                    gameObject.update(input, level);
+                }
+                for (Power power: Powers){
+                    power.update(input, level);
+                }
+                player.update(input, level);
                 if (enemyBoss!=null){
-                    enemyBoss.update(input);
+                    enemyBoss.update(input, level);
+                }
+                level.getSCORE().update();
+                level.getPLAYER_HEALTH().update();
+                level.checkPowersActive();
+                if (fileName.equals(GAME_PROPS.getProperty("level3File"))){
+                    level.getENEMY_BOSS_HEALTH().update();
                 }
 
-                //if collide with EndFlag, win the game
-                if (isCollideWithPlayer(endFlag.getX(), endFlag.getY(), endFlag.getRADIUS())) {
-                    WonGame = true;
-                }
-                SCORE.update();
-
-                //if collide with a coin, update score
-                for (Coin coin : coins){
-                    coin.update(input);
-                    if (isCollideWithPlayer(coin.getX(), coin.getY(), coin.getRADIUS())) {
-                        coin.setVerticalMoveSpeed(coin.getCOLLISION_SPEED());
-                        if (isDoubleScorePowerActive){
-                            SCORE.updateScore(coin.getValue() * 2);
-                        }
-                        else {
-                            SCORE.updateScore(coin.getValue());
-                        }
-                        coin.setValue(coin.getZERO_VALUE());
-                    }
-                }
-                //if collide with an enemy, update health
-                for (Enemy enemy : enemies){
-                    enemy.update((input));
-                    if (isCollideWithPlayer(enemy.getX(), enemy.getY(), enemy.getRADIUS())) {
-                        if (!isInvinciblePowerActive){
-                            PLAYER_HEALTH.updateHealth(enemy.getDamage());
-                            System.out.println(PLAYER_HEALTH.getHealth() +"," + enemy.getDamage());
-                            enemy.setDamage(0);
-                        }
-                    }
-                }
-                if (isDoubleScorePowerActive){
-                    activeFramesDoubleScore++;
-                    if (activeFramesDoubleScore > MAX_POWER_ACTIVE_FRAMES){
-                        isDoubleScorePowerActive = false;
-                        activeFramesDoubleScore = 0;
-                    }
-                }
-                //if collide with a DoubleScorePower
-                for (DoubleScorePower doubleScorePower : doubleScorePowers){
-                    doubleScorePower.update((input));
-                    if (isCollideWithPlayer(doubleScorePower.getX(), doubleScorePower.getY(), doubleScorePower.getRadius())) {
-                        doubleScorePower.setVerticalSpeed(doubleScorePower.getCOLLISION_SPEED());
-                        isDoubleScorePowerActive = true;
-                    }
-                }
-                if (isInvinciblePowerActive){
-                    activeFramesInvincible++;
-                    if (activeFramesInvincible > MAX_POWER_ACTIVE_FRAMES){
-                        isInvinciblePowerActive = false;
-                        activeFramesInvincible = 0;
-                    }
-                }
-                //if collide with a InvinciblePower
-                for (InvinciblePower invinciblePower: invinciblePowers){
-                    invinciblePower.update((input));
-                    if (isCollideWithPlayer(invinciblePower.getX(), invinciblePower.getY(),
-                            invinciblePower.getRadius())) {
-                        invinciblePower.setVerticalSpeed(invinciblePower.getCOLLISION_SPEED());
-                        isInvinciblePowerActive = true;
-                    }
-                }
                 //show flying platforms and make player stand on flying platforms
                 for (FlyingPlatform flyingPlatform: flyingPlatforms){
-                    flyingPlatform.update((input));
+                    flyingPlatform.update(input, level);
                     //check if the player lands on flying platforms
                     if ((Math.abs(player.getX() - flyingPlatform.x) < flyingPlatform.getHalfLength()) &&
                             (Math.abs(player.getY() - flyingPlatform.y) <= flyingPlatform.getHalfHeight()) &&
                             (Math.abs(player.getY() - flyingPlatform.y) >= flyingPlatform.getHalfHeight() - 1)
-                            && !isFallingFromPlatform) {
+                            && !level.isFallingFromPlatform()) {
                         //place the player on the platform
                         if (!player.isOnFlyingPlatform()){
                             player.setVerticalSpeed(0);
                             player.setOnFlyingPlatform(true);
                             player.setJumping(false);
                             flyingPlatform.setPlayerOn(true);
-                            isFallingFromPlatform = false;
+                            level.setFallingFromPlatform(false);
                         }
                     }
                     //when the player falls from the flying platforms
@@ -268,12 +192,13 @@ public class ShadowMario extends AbstractGame {
                         player.setOnFlyingPlatform(false);
                         flyingPlatform.setPlayerOn(false);
                         player.setJumping(true);
-                        isFallingFromPlatform = true;
+                        level.setFallingFromPlatform(true);
                     }
                 }
                 if (player.isOnGround()){
-                    isFallingFromPlatform = false;
+                    level.setFallingFromPlatform(false);
                 }
+
                 //shooting fireBall
                 if ((enemyBoss != null) && player.isShootFireBall() && enemyBoss.isInActivationRadius(player)){
                     player.setShootFireBall(false);
@@ -288,10 +213,7 @@ public class ShadowMario extends AbstractGame {
                     fireball.update();
                     if (isCollideWithBoss(fireball.getX(), fireball.getY(), fireball.getRADIUS())) {
                         fireball.setActive(false);
-                        ENEMY_BOSS_HEALTH.updateHealth(fireball.getDamageSize());
-                    }
-                    if ((fireball.getX() > Window.getWidth()) || (fireball.getX() < 0)){
-                        fireball.setActive(false);
+                        level.getENEMY_BOSS_HEALTH().updateHealth(fireball.getDamageSize());
                     }
                 }
                 if (enemyBoss != null){
@@ -305,47 +227,12 @@ public class ShadowMario extends AbstractGame {
                     fireball.update();
                     if (isCollideWithPlayer(fireball.getX(), fireball.getY(), fireball.getRADIUS())) {
                         fireball.setActive(false);
-                        PLAYER_HEALTH.updateHealth(fireball.getDamageSize());
-                    }
-                    if ((fireball.getX() > Window.getWidth()) || (fireball.getX() < 0)){
-                        fireball.setActive(false);
+                        level.getPLAYER_HEALTH().updateHealth(fireball.getDamageSize());
                     }
                 }
 
-                PLAYER_HEALTH.update();
-                if (fileName.equals(GAME_PROPS.getProperty("level3File"))){
-                    ENEMY_BOSS_HEALTH.update();
-                }
-
-                //if health is less or equal to 0, game over and set the player to dead
-                if (PLAYER_HEALTH.getHealth() <= 0){
-                    player.setDead();
-                    for (Coin coin : coins) {
-                        coin.setPlayerDead();
-                    }
-                    for (Enemy enemy : enemies) {
-                        enemy.setPlayerDead();
-                    }
-                    endFlag.setPlayerDead();
-                    platform.setPlayerDead();
-                    enemyBoss.setPlayerDead();
-                    if (player.getY() > WINDOW_HEIGHT){
-                        isGameOver = true;
-                    }
-                    for (FlyingPlatform flyingPlatform : flyingPlatforms){
-                        flyingPlatform.setPlayerDead();
-                    }
-                    for (InvinciblePower invinciblePower : invinciblePowers){
-                        invinciblePower.setPlayerDead();
-                    }
-                    for (DoubleScorePower doubleScorePower : doubleScorePowers){
-                        doubleScorePower.setPlayerDead();
-                    }
-                }
-                if ((enemyBoss != null) && (ENEMY_BOSS_HEALTH.getHealth() <= 0)){
-                    enemyBoss.setDead();
-                }
-
+                //check if the game is over or not
+                level.checkGameOver(gameObjects, Powers, player, enemyBoss, flyingPlatforms);
 
             }
         }
@@ -353,13 +240,13 @@ public class ShadowMario extends AbstractGame {
             if (input.wasPressed(Keys.ESCAPE)) {
                 Window.close();
             }
-            if (!GiveInstruction){
+            if (!level.isGiveInstruction()){
                 //when game over
-                if (isGameOver){
-                    if (player.getY() >= WINDOW_HEIGHT) {
+                if (level.isGameOver()){
+                    if (player.getY() >= level.WINDOW_HEIGHT) {
                         GAME_OVER.update();
                         if (input.wasPressed(Keys.SPACE)) {
-                            GiveInstruction = true;
+                            level.setGiveInstruction(true);
                         }
                     }
                 }
@@ -367,7 +254,7 @@ public class ShadowMario extends AbstractGame {
                 else {
                     WIN.update();
                     if (input.wasPressed(Keys.SPACE)){
-                        GiveInstruction = true;
+                        level.setGiveInstruction(true);
                     }
                 }
             }

@@ -4,7 +4,7 @@ import bagel.Keys;
 
 import java.util.Properties;
 
-public class EndFlag extends GameObject implements Moveable{
+public class EndFlag extends GameObject{
     private final String IMAGE_NAME;
     private final double RADIUS;
     private final Image END_FLAG;
@@ -31,8 +31,12 @@ public class EndFlag extends GameObject implements Moveable{
         return RADIUS;
     }
 
-    public void update(Input input) {
+    public void update(Input input, Level level) {
         move(input);
+        //if the player collide with EndFlag, win the game
+        if (ShadowMario.isCollideWithPlayer(getX(), getY(), getRADIUS())) {
+            level.setWonGame(true);
+        }
         END_FLAG.draw(x,y);
     }
 }

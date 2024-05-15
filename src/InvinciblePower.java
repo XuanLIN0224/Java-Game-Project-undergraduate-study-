@@ -3,7 +3,7 @@ import bagel.Input;
 import bagel.Keys;
 import java.util.Properties;
 
-public class InvinciblePower extends Power implements Moveable{
+public class InvinciblePower extends Power{
     private final String IMAGE_NAME;
     private final Image INVINCIBLE_POWER;
 
@@ -39,12 +39,17 @@ public class InvinciblePower extends Power implements Moveable{
         }
     }
 
-    public void update(Input input) {
+    public void update(Input input, Level level) {
         if (active){
             framesActive++;
             if (framesActive > MAX_ACTIVE_FRAMES){
                 active = false;
             }
+        }
+        // if the player collides with invincible power
+        if (ShadowMario.isCollideWithPlayer(getX(), getY(), getRadius())) {
+            setVerticalSpeed(getCOLLISION_SPEED());
+            level.setInvinciblePowerActive(true);
         }
         move(input);
         y += verticalSpeed;
