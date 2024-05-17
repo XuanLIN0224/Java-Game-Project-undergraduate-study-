@@ -73,13 +73,11 @@ public class Fireball {
      * can move with its horizontal speed
      */
     public void update() {
-
         // Draw fireball if active
         if (isActive) {
             if ((getX() > Window.getWidth()) || (getX() < 0)){
                 setActive(false);
             }
-
             x += HORIZONTAL_SPEED * DIRECTION;
             FIREBALL.draw(x, Y);
         }

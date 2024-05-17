@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 /**
  * Implemented Code for SWEN20003 Project 1, Semester 1, 2024
- *
  * Please enter your name below
  * @xulin2
  */
@@ -13,7 +12,10 @@ public class ShadowMario extends AbstractGame {
     private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
     private final ArrayList <GameObject> gameObjects = new ArrayList<>();
     private final ArrayList<FlyingPlatform> flyingPlatforms = new ArrayList<>();
+    // creating the Powers arraylist allows me to handle the powers separately from other GameObjects
     private final ArrayList<Power> Powers = new ArrayList<>();
+    // creating the fireballsPlayer and fireballsEnemy allows me to
+    // handle the fireballs shot from the player and the fireballs shot from the enemyBoss separately
     private final ArrayList<Fireball> fireballsPlayer = new ArrayList<>();
     private final ArrayList<Fireball> fireballsEnemy = new ArrayList<>();
     private final Image BACKGROUND_IMAGE;
@@ -35,9 +37,6 @@ public class ShadowMario extends AbstractGame {
 
         BACKGROUND_IMAGE = new Image(game_props.getProperty("backgroundImage"));
         level = new Level();
-
-        // you can initialise other values from the property files here
-        // I prefer initialise them in the main function and it works fine
     }
     /**
      * The entry point for the program.
@@ -66,6 +65,8 @@ public class ShadowMario extends AbstractGame {
             double x = Double.parseDouble(data[i][1]);
             double y = Double.parseDouble(data[i][2]);
             switch (entityType) {
+                //the enemyBoss only exists in Level 3, so even though it is a subclass of GameObject,
+                //I still decided to make an instance of it to check if it is null or not
                 case "ENEMY_BOSS":
                     enemyBoss = new EnemyBoss(x, y);
                     break;
@@ -81,6 +82,9 @@ public class ShadowMario extends AbstractGame {
                 case "PLATFORM":
                     gameObjects.add(new Platform(x, y));
                     break;
+                //As I need to check if the player shoots the fireball or not and
+                //if the player is on the flying platforms or not,
+                //I need to make the player not be in the gameObjects arraylist
                 case "PLAYER":
                     player = new Player(x, y);
                     break;
@@ -132,6 +136,10 @@ public class ShadowMario extends AbstractGame {
     /**
      * Performs a state update.
      * Allows the game to exit when the escape key is pressed.
+     * Allows loading different levels by pressing different keys.
+     * Allows reloading levels
+     * Allows checking if the player and the enemyBoss can shoot fireballs or not
+     * Allows checking if the player is on flying platforms
      */
     @Override
     protected void update(Input input) {
@@ -214,7 +222,7 @@ public class ShadowMario extends AbstractGame {
                     level.setFallingFromPlatform(false);
                 }
 
-                //shooting fireBall
+                //shooting fireBalls
                 if ((enemyBoss != null) && player.isShootFireBall() && enemyBoss.isInActivationRadius(player)){
                     player.setShootFireBall(false);
                     if (player.isTurnLeft()){
@@ -277,6 +285,8 @@ public class ShadowMario extends AbstractGame {
             else {
                 START_INSTRUCTION.update();
                 TITLE.update();
+                //As in this project, level selecting is done by pressing different keys on the keyboard,
+                //I need to handle each Key pressing condition separately
                 if (input.wasPressed(Keys.NUM_1)){
                     resetGame();
                     fileName = GAME_PROPS.getProperty("level1File");

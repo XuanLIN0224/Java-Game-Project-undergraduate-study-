@@ -26,7 +26,7 @@ public class enemyBossHealth extends Health {
     }
     /**
      * Performs a state update.
-     * Shows the message on screen
+     * Shows the enemyBoss health on screen
      */
     public void update() {
         String scoreText = HEALTH_MESSAGE + (int)(getHealth()*100);

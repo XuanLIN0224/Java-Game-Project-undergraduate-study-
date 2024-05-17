@@ -70,7 +70,6 @@ public class Enemy extends GameObject{
             direction = -direction;
             distanceMoved = 0;
         }
-
         if (direction == 1) {
             x += direction;
             distanceMoved +=direction;
@@ -79,14 +78,13 @@ public class Enemy extends GameObject{
             x += direction;
             distanceMoved += (-direction);
         }
-        // if the player collides with an enemy
+        // if the player collides with an enemy, no more damage from this enemy should be taken
         if (ShadowMario.isCollideWithPlayer(getX(), getY(), RADIUS)) {
             if (!level.isInvinciblePowerActive()){
                 level.getPLAYER_HEALTH().updateHealth(getDamage());
                 setDamage(0);
             }
         }
-
         move(input);
         ENEMY.draw(x, y);
     }

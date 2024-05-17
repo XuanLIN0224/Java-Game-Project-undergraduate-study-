@@ -43,5 +43,4 @@ public abstract class Power extends GameObject{
         super(x, y);
         active = false;
     }
-
 }

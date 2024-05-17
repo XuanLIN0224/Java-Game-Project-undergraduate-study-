@@ -72,5 +72,4 @@ public class InvinciblePower extends Power{
         y += verticalSpeed;
         INVINCIBLE_POWER.draw(x,y);
     }
-
 }
