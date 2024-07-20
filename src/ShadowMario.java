@@ -7,6 +7,7 @@ import java.util.ArrayList;
  * Implemented Code for SWEN20003 Project 1, Semester 1, 2024
  * Please enter your name below
  * @xulin2
+ * Not completely written by Xuan LIN, skeleton code provided by the University of Melbourne
  */
 public class ShadowMario extends AbstractGame {
     private final Properties GAME_PROPS = IOUtils.readPropertiesFile("res/app.properties");
